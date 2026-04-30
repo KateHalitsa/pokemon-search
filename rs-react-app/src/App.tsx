@@ -23,47 +23,50 @@ export type Item = {
   description: string;
 };
 type State = {
-  search: string;
+  lastSearch: string;
   results: Item[];
-  loading: boolean;
 };
 ;
 class App extends Component<{}, State> {
    state: State = {
-    search:'',
+    lastSearch:'',
     results: [],
-    loading: false,
   };
 
   componentDidMount(): void {
-    this.fetchData(this.state.search);
+    this.fetchData(this.state.lastSearch);
   }
 
   fetchData = async (search: string) => {
-    this.setState({ loading: true });
     let items: Item[];
     try {
       let data;
-
+      let json;
       if (search) {
         const response = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`
         );
 
-        const pokemon = await response.json();
+         const details: PokemonDetails =
+        await response.json();
 
-        data = [
-          {
-            name: pokemon.name,
-            url: '',
-          },
-        ];
+      const abilities = details.abilities.map(
+        (a) => a.ability.name
+      );
+
+      items = [
+        {
+          name: details.name,
+          description: 'Abilities: ' + abilities.join(', '),
+          id: 0
+        },
+      ];
       } else {
         const response = await fetch(
           'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
         );
 
-        const json = await response.json();
+        json = await response.json();
         data = json.results;
 
          items = await Promise.all(
@@ -90,21 +93,23 @@ class App extends Component<{}, State> {
 
       this.setState({
         results: items,
-        loading: false,
       });
     } catch {
       this.setState({
         results: [],
-        loading: false,
       });
     }
   };
   handleSearch = (query: string) => {
+    const trimmedValue = query.trim();
+    if (trimmedValue === this.state.lastSearch) {
+    return;
+    }
     this.setState({
-      search: query,
+      lastSearch: trimmedValue,
     });
 
-    this.fetchData(query);
+    this.fetchData(trimmedValue);
   };
 
   render() {
