@@ -4,8 +4,11 @@ const SEARCH_STORAGE_KEY = "rssSearch";
 type State = {
   lastSearch: string;
 };
-class SearchSection extends Component<{}, State>{
-    constructor(props: {}) {
+type Props = {
+  onSearch: (value: string) => void;
+};
+class SearchSection extends Component<Props, State>{
+    constructor(props: Props) {
     super(props);
     this.state = {lastSearch: localStorage.getItem(SEARCH_STORAGE_KEY)|| '',};
     }
@@ -21,6 +24,9 @@ class SearchSection extends Component<{}, State>{
         value
     );
     };
+    handleSearch = () => {
+    this.props.onSearch(this.state.lastSearch);
+    };
         
     render(): ReactNode {
         return(
@@ -32,7 +38,8 @@ class SearchSection extends Component<{}, State>{
                     value = {this.state.lastSearch}
                     onChange={this.handleChange}>
                     </input>
-                    <button className="search-btn">
+                    <button className="search-btn"
+                    onClick={this.handleSearch}>
                         Search
                     </button>
                 </div>

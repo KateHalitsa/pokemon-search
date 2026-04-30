@@ -1,19 +1,16 @@
 import { Component } from "react";
 import './ResultsTable.css';
+import type { Props } from "../ResultsSection/ResultsSection";
 
-class ResultTable extends Component{
+class ResultTable extends Component<Props>{
     render(){
-        const items =[
-            { name: 'Item 1', description: 'Description 1' },
-            { name: 'Item 2', description: 'Description 2' },
-            { name: 'Item 3', description: 'Description 3' },
-        ]
+        const items = this.props.results;
    
     return (
          <div className="results-table">
         <div className="table-header">
-          <div>Item Name</div>
-          <div>Item Description</div>
+          <div>Name</div>
+          <div>Description</div>
         </div>
         {items.map((item)=>(
         <div className="table-row" key={item.name}>
