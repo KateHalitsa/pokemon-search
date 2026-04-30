@@ -6,6 +6,7 @@ class ResultTable extends Component<Props>{
     render(){
         const items = this.props.results;
    
+
     return (
          <div className="results-table">
         <div className="table-header">

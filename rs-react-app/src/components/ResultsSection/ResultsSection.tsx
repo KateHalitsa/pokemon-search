@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import './ResultsSection.css';
 import ResultTable from '../ResultsTable/ResultsTable';
-import type { Item } from '../../App';
+import type { Item, Pokemon, PokemonDetails } from '../../App';
 
 
 export type Props = {
@@ -10,7 +10,7 @@ export type Props = {
 
 class ResultsSection extends Component<Props> {
   render() {
-    const { results } = this.props;
+    const { results} = this.props;
 
     return (
       <section className="results-section">
