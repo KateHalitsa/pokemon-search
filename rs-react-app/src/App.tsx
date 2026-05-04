@@ -27,6 +27,7 @@ type State = {
   results: Item[];
   loading: boolean;
   errorMessage:string;
+  crash: boolean;
 };
 ;
 class App extends Component<{}, State> {
@@ -34,11 +35,16 @@ class App extends Component<{}, State> {
     lastSearch:'',
     results: [],
     loading:false,
-    errorMessage:''
+    errorMessage:'',
+    crash:false
   };
   private loadTimeout?: number;
-
-  componentDidMount(): void {
+  causeAnError=()=>{
+    this.setState({
+    crash: true,
+  });
+  }
+  componentDidMount() {
     this.fetchData(this.state.lastSearch);
   }
   getErrorMessage(status: number): string {
@@ -159,10 +165,13 @@ class App extends Component<{}, State> {
   };
 
   render() {
+    if (this.state.crash) {
+    throw new Error('Test application error');
+    }
     return (
       <>
         <SearchSection onSearch={this.handleSearch} />
-        <ResultsSection results={this.state.results} loading={this.state.loading} errorMessage={this.state.errorMessage} />
+        <ResultsSection results={this.state.results} loading={this.state.loading} errorMessage={this.state.errorMessage} onErrorCheck={this.causeAnError}/>
       </>
     );
   }

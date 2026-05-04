@@ -38,12 +38,6 @@
 }
 .search-btn{
      background-color:#F09367;
-     width: 20%;
-     padding: 0 28px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
 }
 .search-btn:hover {
   background: #ea580c;

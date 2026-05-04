@@ -24,3 +24,11 @@
     transform: rotate(360deg);
   }
 }
+.error-wapper{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+.error-btn{
+   background-color:#fdba74;
+}

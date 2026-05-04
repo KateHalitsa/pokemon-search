@@ -8,6 +8,7 @@ export type Props = {
   results: Item[];
   loading: boolean;
   errorMessage: string;
+  onErrorCheck: () => void;
 };
 
 class ResultsSection extends Component<Props> {
@@ -25,8 +26,10 @@ class ResultsSection extends Component<Props> {
           <p>{errorMessage}</p>
         ) : (
         <ResultTable results={results}/>))
-
-  }
+        }
+       <div className='error-wapper'>
+        <button className='error-btn' onClick={this.props.onErrorCheck}>Error</button>
+       </div>
       </section>
     );
   }
