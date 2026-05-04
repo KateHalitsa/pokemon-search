@@ -1,6 +1,7 @@
 {
   "name": "rs-react-app",
   "private": true,
+  "homepage": "https://rolling-scopes-school.github.io/katehalitsa-REACT2026Q2/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format:fix": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "predeploy":"npm run build",
+    "deploy":"gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.2.5",

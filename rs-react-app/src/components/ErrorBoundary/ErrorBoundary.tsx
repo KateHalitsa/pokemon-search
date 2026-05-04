@@ -12,7 +12,7 @@ type State = {
   hasError: boolean;
 };
 class ErrorBoundary extends Component<Props, State> {
-  constructor(props) {
+  constructor(props:Props) {
     super(props);
     this.state = { hasError: false };
   }
@@ -40,7 +40,4 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-function logErrorToMyService(error: any, componentStack: any, arg2: string) {
-    throw new Error('Function not implemented.');
-}
 export default ErrorBoundary

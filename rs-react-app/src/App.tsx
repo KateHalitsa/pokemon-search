@@ -28,6 +28,7 @@ type State = {
   loading: boolean;
   errorMessage:string;
   crash: boolean;
+  loadTimeout: number;
 };
 ;
 class App extends Component<{}, State> {
@@ -36,9 +37,10 @@ class App extends Component<{}, State> {
     results: [],
     loading:false,
     errorMessage:'',
-    crash:false
+    crash:false,
+    loadTimeout: 1500
   };
-  private loadTimeout?: number;
+
   causeAnError=()=>{
     this.setState({
     crash: true,
@@ -65,7 +67,7 @@ class App extends Component<{}, State> {
   fetchData = async (search: string) => {
     let items: Item[];
     try {
-      let data;
+
       let json;
       let response;
       if (search) {
@@ -108,7 +110,6 @@ class App extends Component<{}, State> {
       return;
         }
         json = await response.json();
-        data = json.results;
 
          items = await Promise.all(
           json.results.map(async (pokemon: Pokemon) => {
@@ -154,7 +155,7 @@ class App extends Component<{}, State> {
     });
 
     this.state.loading = true;
-      this.loadTimeout = window.setTimeout(() => {
+      this.state.loadTimeout = window.setTimeout(() => {
       this.fetchData(trimmedValue);
       this.state.loading=false;
     }, 1500);

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import './ResultsSection.css';
 import ResultTable from '../ResultsTable/ResultsTable';
-import type { Item, Pokemon, PokemonDetails } from '../../App';
+import type { Item } from '../../App';
 
 
 export type Props = {
