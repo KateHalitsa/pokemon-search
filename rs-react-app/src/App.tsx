@@ -26,30 +26,55 @@ type State = {
   lastSearch: string;
   results: Item[];
   loading: boolean;
+  errorMessage:string;
 };
 ;
 class App extends Component<{}, State> {
    state: State = {
     lastSearch:'',
     results: [],
-    loading:false
+    loading:false,
+    errorMessage:''
   };
   private loadTimeout?: number;
 
   componentDidMount(): void {
     this.fetchData(this.state.lastSearch);
   }
+  getErrorMessage(status: number): string {
+  if (status === 404) {
+    return 'Nothing found for your search';
+  }
 
+  if (status >= 500) {
+    return 'Server is temporarily unavailable';
+  }
+
+  if (status >= 400) {
+    return 'Bad request';
+  }
+
+  return 'Unexpected error';
+}
   fetchData = async (search: string) => {
     let items: Item[];
     try {
       let data;
       let json;
+      let response;
       if (search) {
-        const response = await fetch(
+        response = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`
         );
+      if (!response.ok) {
+          this.setState({
+        results: [],
+        errorMessage: this.getErrorMessage(response.status),
+        loading: false
+      });
 
+      return;
+        }
          const details: PokemonDetails =
         await response.json();
 
@@ -65,10 +90,17 @@ class App extends Component<{}, State> {
         },
       ];
       } else {
-        const response = await fetch(
+        response = await fetch(
           'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
         );
-
+       if (!response.ok) {
+          this.setState({
+        results: [],
+        errorMessage: this.getErrorMessage(response.status),
+        loading: false
+      });
+      return;
+        }
         json = await response.json();
         data = json.results;
 
@@ -93,14 +125,17 @@ class App extends Component<{}, State> {
           })
       )
     }
-
       this.setState({
         results: items,
+        loading:false
       });
-    } catch {
-      this.setState({
-        results: [],
-      });
+    } catch{
+       this.setState({
+      results: [],
+      errorMessage: 'Network connection error',
+      loading: false
+    });
+  
     }
   };
   handleSearch = (query: string) => {
@@ -127,7 +162,7 @@ class App extends Component<{}, State> {
     return (
       <>
         <SearchSection onSearch={this.handleSearch} />
-        <ResultsSection results={this.state.results} loading={this.state.loading} />
+        <ResultsSection results={this.state.results} loading={this.state.loading} errorMessage={this.state.errorMessage} />
       </>
     );
   }

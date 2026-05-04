@@ -7,11 +7,12 @@ import type { Item, Pokemon, PokemonDetails } from '../../App';
 export type Props = {
   results: Item[];
   loading: boolean;
+  errorMessage: string;
 };
 
 class ResultsSection extends Component<Props> {
   render() {
-    const {results,loading} = this.props;
+    const {results,loading,errorMessage} = this.props;
 
     return (
       <section className="results-section">
@@ -21,7 +22,7 @@ class ResultsSection extends Component<Props> {
           <div className="loader">
           </div>
         ) : (results.length === 0 ? (
-          <p>No results</p>
+          <p>{errorMessage}</p>
         ) : (
         <ResultTable results={results}/>))
 
