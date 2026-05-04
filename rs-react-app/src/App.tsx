@@ -1,6 +1,6 @@
 
 import './App.css'
-import SearchSection from './components/SearchSection/SearchSection'
+import SearchSection, { SEARCH_STORAGE_KEY } from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
 import { Component } from 'react';
 
@@ -25,13 +25,16 @@ export type Item = {
 type State = {
   lastSearch: string;
   results: Item[];
+  loading: boolean;
 };
 ;
 class App extends Component<{}, State> {
    state: State = {
     lastSearch:'',
     results: [],
+    loading:false
   };
+  private loadTimeout?: number;
 
   componentDidMount(): void {
     this.fetchData(this.state.lastSearch);
@@ -109,14 +112,22 @@ class App extends Component<{}, State> {
       lastSearch: trimmedValue,
     });
 
-    this.fetchData(trimmedValue);
+    this.state.loading = true;
+      this.loadTimeout = window.setTimeout(() => {
+      this.fetchData(trimmedValue);
+      this.state.loading=false;
+    }, 1500);
+    localStorage.setItem(
+        SEARCH_STORAGE_KEY,
+        query
+    );
   };
 
   render() {
     return (
       <>
         <SearchSection onSearch={this.handleSearch} />
-        <ResultsSection results={this.state.results} />
+        <ResultsSection results={this.state.results} loading={this.state.loading} />
       </>
     );
   }

@@ -1,8 +1,12 @@
 import { Component } from "react";
 import './ResultsTable.css';
-import type { Props } from "../ResultsSection/ResultsSection";
+import type { Item } from "../../App";
 
-class ResultTable extends Component<Props>{
+export type PropsTable = {
+  results: Item[];
+
+};
+class ResultTable extends Component<PropsTable>{
     render(){
         const items = this.props.results;
    
