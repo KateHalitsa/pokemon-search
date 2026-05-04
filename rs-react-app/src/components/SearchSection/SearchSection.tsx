@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from "react";
 import './SearchSection.css';
-const SEARCH_STORAGE_KEY = "rssSearch";
+ export const SEARCH_STORAGE_KEY = "rssSearch";
 type State = {
   lastSearch: string;
 };
@@ -21,7 +21,7 @@ class SearchSection extends Component<Props, State>{
 
     localStorage.setItem(
         SEARCH_STORAGE_KEY,
-        value
+        value.trim()
     );
     };
     handleSearch = () => {
