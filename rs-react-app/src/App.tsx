@@ -32,7 +32,7 @@ type State = {
 ;
 class App extends Component<{}, State> {
    state: State = {
-    lastSearch:'',
+    lastSearch: localStorage.getItem(SEARCH_STORAGE_KEY)|| '',
     results: [],
     loading:false,
     errorMessage:'',
