@@ -10,7 +10,7 @@ type Props = {
 class SearchSection extends Component<Props, State>{
     constructor(props: Props) {
     super(props);
-    this.state = {lastSearch: localStorage.getItem(SEARCH_STORAGE_KEY)|| '',};
+    this.state = {lastSearch: '',};
     }
     handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -27,7 +27,15 @@ class SearchSection extends Component<Props, State>{
     handleSearch = () => {
     this.props.onSearch(this.state.lastSearch);
     };
-        
+    componentDidMount() {
+    const saved = localStorage.getItem(SEARCH_STORAGE_KEY);
+
+    if (saved) {
+      this.setState({
+        lastSearch: saved,
+      });
+    }
+    }
     render(): ReactNode {
         return(
             <section className="search-section">
