@@ -58,4 +58,38 @@ describe('Results/CardList Component Tests', () => {
   expect(await screen.findByTestId('loader')).toBeInTheDocument();
 });
     })
+    describe('Data Display Tests',()=>{
+      test('Data Display Tests',()=>{
+        const items = [
+            { id: 1, name: 'Pikachu', description: 'Abilities: static, lightning-rod' },
+            { id: 2, name: 'Bulbasaur', description: 'Abilities: overgrow, chlorophyll' },
+            { id: 3, name: 'Charmander', description: 'Abilities: blaze, solar-power' },
+        ];
+
+          render(
+            <ResultTable
+            results={items}
+            />
+        );
+
+        expect(screen.getByText('Pikachu')).toBeInTheDocument();
+        expect(screen.getByText('Abilities: static, lightning-rod')).toBeInTheDocument();
+
+        expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
+        expect(screen.getByText('Abilities: overgrow, chlorophyll')).toBeInTheDocument();
+
+        expect(screen.getByText('Charmander')).toBeInTheDocument();
+        expect(screen.getByText('Abilities: blaze, solar-power')).toBeInTheDocument();
+
+      })
+
+test('Handles empty data gracefully', () => {
+  render(<ResultTable results={[]} />);
+
+  expect(screen.getByText('Name')).toBeInTheDocument();
+  expect(screen.getByText('Description')).toBeInTheDocument();
+
+  expect(screen.queryByText(/Abilities/i)).not.toBeInTheDocument();
+});
+    })
 })
