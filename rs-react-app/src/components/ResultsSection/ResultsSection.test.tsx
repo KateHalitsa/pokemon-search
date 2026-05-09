@@ -6,6 +6,7 @@ import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ResultsSection from "./ResultsSection";
+import App from "../../App";
 
 afterEach(() => {
   cleanup();
@@ -92,4 +93,50 @@ test('Handles empty data gracefully', () => {
   expect(screen.queryByText(/Abilities/i)).not.toBeInTheDocument();
 });
     })
+    describe("Error Handling Tests",()=>{
+      beforeEach(() => {
+        vi.stubGlobal('localStorage', {
+          getItem: vi.fn(() => null),
+          setItem: vi.fn(),
+          removeItem: vi.fn(),
+          clear: vi.fn(),
+        });
+      });
+      test('Displays error message when API call fails', () => {
+        render(
+          <ResultsSection
+            results={[]}
+            loading={false}
+            errorMessage="Network connection error"
+            onErrorCheck={() => {}}
+          />
+        );
+
+        expect(
+          screen.getByText('Network connection error')
+        ).toBeInTheDocument();
+      });
+
+      describe('HTTP error messages', () => {
+        const app = new App({});
+
+        test('shows 404 message', () => {
+          expect(app.getErrorMessage(404))
+            .toBe('Nothing found for your search');
+        });
+
+        test('shows 400 message', () => {
+          expect(app.getErrorMessage(400))
+            .toBe('Bad request');
+        });
+
+        test('shows 500 message', () => {
+          expect(app.getErrorMessage(500))
+            .toBe('Server is temporarily unavailable');
+        });
+      });
+    })
+    
 })
+
+

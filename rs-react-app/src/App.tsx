@@ -33,7 +33,7 @@ type State = {
 ;
 class App extends Component<{}, State> {
    state: State = {
-    lastSearch: localStorage.getItem(SEARCH_STORAGE_KEY)|| '',
+    lastSearch: '',
     results: [],
     loading:false,
     errorMessage:'',
@@ -47,6 +47,11 @@ class App extends Component<{}, State> {
   });
   }
   componentDidMount() {
+    const saved = localStorage.getItem(SEARCH_STORAGE_KEY) || '';
+
+    this.setState({
+      lastSearch: saved,
+    });
     this.fetchData(this.state.lastSearch);
   }
   getErrorMessage(status: number): string {
@@ -152,13 +157,17 @@ class App extends Component<{}, State> {
     }
     this.setState({
       lastSearch: trimmedValue,
+      loading: true,
+      errorMessage: '',
+      results: []
     });
 
-    this.state.loading = true;
-      this.state.loadTimeout = window.setTimeout(() => {
+      window.setTimeout(() => {
       this.fetchData(trimmedValue);
-      this.state.loading=false;
-    }, 1500);
+      this.setState({
+      loading: false,
+        });
+        }, 1500);
     localStorage.setItem(
         SEARCH_STORAGE_KEY,
         query
