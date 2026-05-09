@@ -20,7 +20,7 @@ class ResultsSection extends Component<Props> {
         <h2>Results</h2>
         {
         loading ? (
-          <div className="loader">
+          <div className="loader" data-testid="loader">
           </div>
         ) : (results.length === 0 ? (
           <p>{errorMessage}</p>
