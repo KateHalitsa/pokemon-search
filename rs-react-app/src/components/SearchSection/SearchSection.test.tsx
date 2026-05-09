@@ -4,7 +4,7 @@ import SearchSection, { SEARCH_STORAGE_KEY } from "./SearchSection";
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
-
+import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
   const store: Record<string, string> = {};
@@ -29,34 +29,90 @@ afterEach(() => {
   cleanup();
 });
 describe('SearchSection', () => {
-describe('Rendering Tests',()=>{
-test('Renders search input and search button', () => {
-  const searchFn=vi.fn();
+    describe('Rendering Tests',()=>{
+        test('Renders search input and search button', () => {
+        const searchFn=vi.fn();
 
-  render(<SearchSection onSearch={searchFn}/>);
+        render(<SearchSection onSearch={searchFn}/>);
 
-  expect(screen.getByRole('textbox')).toBeInTheDocument();
-  expect(screen.getByRole('button')).toBeInTheDocument();
-});
+        expect(screen.getByRole('textbox')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
+        });
 
-test('Displays previously saved search term from localStorage on mount', async () => {
-  const searchFn=vi.fn();
+        test('Displays previously saved search term from localStorage on mount', async () => {
+        const searchFn=vi.fn();
 
-  render(<SearchSection onSearch={searchFn}/>);
+        render(<SearchSection onSearch={searchFn}/>);
 
-  await waitFor(() => {
-    expect(screen.getByRole('textbox')).toHaveValue('react testing');
-  });
-});
-test('Shows empty input when no saved term exists', async () => {
-  const searchFn=vi.fn();
-  localStorage.clear();
+        await waitFor(() => {
+            expect(screen.getByRole('textbox')).toHaveValue('react testing');
+        });
+        });
+        test('Shows empty input when no saved term exists', async () => {
+        const searchFn=vi.fn();
+        localStorage.clear();
 
-  render(<SearchSection onSearch={searchFn}/>);
+        render(<SearchSection onSearch={searchFn}/>);
 
-  await waitFor(() => {
-    expect(screen.getByRole('textbox')).toHaveValue('');
-  });
-});
-})
+        await waitFor(() => {
+            expect(screen.getByRole('textbox')).toHaveValue('');
+        });
+        });
+    })
+    describe("User Interaction Tests", () => {
+        test('Updates input value when user types',async()=>{
+            const user = userEvent.setup();
+            const searchFn = vi.fn();
+            render(<SearchSection onSearch={searchFn}/>);
+
+            const input=screen.getByPlaceholderText("Search...");
+            await user.clear(input);
+            await user.type(input, "Test");
+            expect(input).toHaveValue('Test');
+        })
+        test('Saves search term to localStorage when search button is clicked', async()=>{
+            const user = userEvent.setup();
+            const searchFn = vi.fn();
+            render(<SearchSection onSearch={searchFn}/>);
+
+            const button = screen.getByRole('button');
+            const input=screen.getByPlaceholderText("Search...");
+            await user.clear(input);
+            await user.type(input, 'Pikachu');
+            await user.click(button);
+
+            expect(localStorage.getItem(SEARCH_STORAGE_KEY)).toBe('Pikachu');
+
+        })
+
+        test('Trims whitespace from search input before saving', async()=>{
+            const user = userEvent.setup();
+            const searchFn = vi.fn();
+            render(<SearchSection onSearch={searchFn}/>);
+
+            const button = screen.getByRole('button');
+            const input=screen.getByPlaceholderText("Search...");
+            await user.clear(input);
+            await user.type(input, '   Pikachu ');
+            await user.click(button);
+
+            expect(localStorage.getItem(SEARCH_STORAGE_KEY)).toBe('Pikachu');
+
+        })
+        test('Triggers search callback with correct parameters', async()=>{
+            const user = userEvent.setup();
+            const searchFn = vi.fn();
+            render(<SearchSection onSearch={searchFn}/>);
+
+            const button = screen.getByRole('button');
+            const input=screen.getByPlaceholderText("Search...");
+            await user.clear(input);
+            await user.type(input, 'Pikachu');
+            await user.click(button);
+
+            expect(searchFn).toHaveBeenCalledWith('Pikachu');
+ 
+        })
+
+    })
 })
