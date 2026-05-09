@@ -115,4 +115,30 @@ describe('SearchSection', () => {
         })
 
     })
+    describe('LocalStorage Integration',()=>{
+        test('Retrieves saved search term on component mount', async () => {
+        localStorage.setItem(SEARCH_STORAGE_KEY, 'Bulbasaur');
+
+        render(<SearchSection onSearch={vi.fn()} />);
+
+        expect(await screen.findByDisplayValue('Bulbasaur')).toBeInTheDocument();
+    });
+        test('Overwrites existing localStorage value when new search is performed',async()=>{
+        localStorage.setItem(SEARCH_STORAGE_KEY, 'react');
+
+        const user = userEvent.setup();
+
+        render(<SearchSection onSearch={vi.fn()} />);
+
+        const input = screen.getByRole('textbox');
+        const button = screen.getByRole('button');
+
+        await user.clear(input);
+        await user.type(input, 'pikachu');
+        await user.click(button);
+
+        expect(localStorage.getItem(SEARCH_STORAGE_KEY)).toBe('pikachu');
+        })
+    })
+
 })
