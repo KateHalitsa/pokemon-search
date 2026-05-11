@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import '@testing-library/jest-dom/vitest';
 import ErrorBoundary from "./ErrorBoundary";
 import { afterEach } from 'vitest';
+import App from "../../App";
+import userEvent from "@testing-library/user-event";
 
 describe('Error Boundary Tests', () => {
     beforeEach(() => {
@@ -58,5 +60,39 @@ describe('Error Boundary Tests', () => {
 
             expect(errorSpy).toHaveBeenCalled();
         })
+    })
+    describe('Error Button Tests',()=>{
+        test('Throws error when test button is clicked',async()=>{
+             const user = userEvent.setup();
+
+            vi.spyOn(console, 'error').mockImplementation(() => {});
+
+            render(
+                <ErrorBoundary>
+                <App />
+                </ErrorBoundary>
+            );
+            const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            await user.click(screen.getByText('Error'));
+
+            expect(errorSpy).toHaveBeenCalled();
+        })
+        test('Throws error when test button is clicked',async()=>{
+             const user = userEvent.setup();
+
+            vi.spyOn(console, 'error').mockImplementation(() => {});
+
+            render(
+                <ErrorBoundary>
+                <App />
+                </ErrorBoundary>
+            );
+            await user.click(screen.getByText('Error'));
+
+            expect(
+                screen.getByText('Something went wrong')
+            ).toBeInTheDocument();
+        })
+
     })
 })
