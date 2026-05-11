@@ -70,4 +70,103 @@ describe('Main App Component Tests',()=>{
         });
         });
     })
+    describe('API Integration Tests',()=>{
+        test('Calls API with correct parameters',async()=>{
+            globalThis.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({
+            results: [],
+            }),
+        });
+
+        render(<App />);
+
+        await waitFor(() => {
+            expect(fetch).toHaveBeenCalledWith(
+            'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
+            );
+        });
+        })
+        test('Handles successful API responses', async () => {
+            globalThis.fetch = vi.fn()
+                .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({
+                    results: [
+                    {
+                        name: 'pikachu',
+                        url: 'https://pokeapi.co/api/v2/pokemon/25/',
+                    },
+                    ],
+                }),
+                })
+                .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({
+                    name: 'pikachu',
+                    abilities: [
+                    {
+                        ability: {
+                        name: 'static',
+                        },
+                    },
+                    ],
+                }),
+                });
+
+            render(<App />);
+
+            await waitFor(() => {
+                expect(screen.getByText('pikachu')).toBeInTheDocument();
+            });
+
+            expect(
+                screen.getByText('Abilities: static')
+            ).toBeInTheDocument();
+        });
+        describe('Handles API error responses',()=>{
+            test('Handles 404 API responses', async () => {
+                globalThis.fetch = vi.fn().mockResolvedValue({
+                    ok: false,
+                    status: 404,
+                });
+
+                render(<App />);
+
+                await waitFor(() => {
+                    expect(
+                    screen.getByText('Nothing found for your search')
+                    ).toBeInTheDocument();
+                });
+            });
+            test('Handles 500 API responses', async () => {
+                globalThis.fetch = vi.fn().mockResolvedValue({
+                    ok: false,
+                    status: 500,
+                });
+
+                render(<App />);
+
+                await waitFor(() => {
+                    expect(
+                    screen.getByText('Server is temporarily unavailable')
+                    ).toBeInTheDocument();
+                });
+            });
+            test('Handles 400 API responses', async () => {
+                globalThis.fetch = vi.fn().mockResolvedValue({
+                    ok: false,
+                    status: 400,
+                });
+
+                render(<App />);
+
+                await waitFor(() => {
+                    expect(
+                    screen.getByText('Bad request')
+                    ).toBeInTheDocument();
+                });
+        })
+    })
+    })
 })
