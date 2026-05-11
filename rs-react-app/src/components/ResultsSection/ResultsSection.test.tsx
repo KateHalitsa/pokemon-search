@@ -140,3 +140,47 @@ test('Handles empty data gracefully', () => {
 })
 
 
+describe('Loading Component Tests',()=>{
+  describe('Rendering Tests',()=>{
+    test('Renders loading indicator (spinner, skeleton, etc.)',()=>{
+      render(
+        <ResultsSection
+          results={[]}
+          loading={true}
+          errorMessage=""
+          onErrorCheck={vi.fn()}
+        />
+      );
+
+      expect(screen.getByTestId('loader'))
+        .toBeInTheDocument();
+    })
+    test('Shows loader when loading is true', () => {
+      render(
+        <ResultsSection
+          results={[]}
+          loading={true}
+          errorMessage=""
+          onErrorCheck={vi.fn()}
+        />
+      );
+
+      expect(screen.getByTestId('loader'))
+        .toBeInTheDocument();
+    });
+    test('Hides loader when loading is false', () => {
+      render(
+        <ResultsSection
+          results={[]}
+          loading={false}
+          errorMessage=""
+          onErrorCheck={vi.fn()}
+        />
+      );
+
+      expect(screen.queryByTestId('loader'))
+        .not.toBeInTheDocument();
+    });
+  })
+})
+
