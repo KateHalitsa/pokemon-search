@@ -3,7 +3,7 @@ import './App.css'
 import SearchSection, { SEARCH_STORAGE_KEY } from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
 import { Component } from 'react';
-
+import { fetchPokemon } from './components/api/pokemonApi';
 export type Pokemon = {
   name: string;
   url: string;
@@ -77,9 +77,7 @@ class App extends Component<{}, State> {
       let json;
       let response;
       if (search) {
-        response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`
-        );
+        response = await fetchPokemon(search.toLowerCase());
       if (!response.ok) {
           this.setState({
         results: [],
