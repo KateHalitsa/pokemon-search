@@ -51,6 +51,7 @@ class App extends Component<{}, State> {
 
     this.setState({
       lastSearch: saved,
+      loading: true
     });
     this.fetchData(this.state.lastSearch);
   }
