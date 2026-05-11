@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
-import { test, expect, beforeEach, vi, describe } from 'vitest';
+import { test, expect, beforeEach, vi, describe, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import type { MockedFunction } from 'vitest';
+import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
   const store: Record<string, string> = {};
@@ -20,7 +21,11 @@ beforeEach(() => {
     },
   });
 });        
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
 
+  });
 globalThis.fetch = vi.fn();
 
 describe('Main App Component Tests',()=>{
@@ -168,5 +173,93 @@ describe('Main App Component Tests',()=>{
                 });
         })
     })
+    })
+    describe('State Management Tests',()=>{
+        describe('Updates component state based on API responses',()=>{
+            test('Updates component state based on successful API responses', async () => {
+                globalThis.fetch = vi.fn()
+                    .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        results: [
+                        {
+                            name: 'pikachu',
+                            url: 'https://pokeapi.co/api/v2/pokemon/25/',
+                        },
+                        ],
+                    }),
+                    })
+                    .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        name: 'pikachu',
+                        abilities: [
+                        {
+                            ability: {
+                            name: 'static',
+                            },
+                        },
+                        ],
+                    }),
+                    });
+
+                render(<App />);
+
+                await waitFor(() => {
+                    expect(screen.getByText('pikachu')).toBeInTheDocument();
+                });
+
+                expect(
+                    screen.getByText('Abilities: static')
+                ).toBeInTheDocument();
+
+                expect(
+                    screen.queryByTestId('loader')
+                ).not.toBeInTheDocument();
+            });
+            test('Updates component state based on failed API responses', async () => {
+                globalThis.fetch = vi.fn().mockResolvedValue({
+                    ok: false,
+                    status: 404,
+                });
+
+                render(<App />);
+
+                await waitFor(() => {
+                    expect(
+                    screen.getByText('Nothing found for your search')
+                    ).toBeInTheDocument();
+                });
+
+                expect(
+                    screen.queryByTestId('loader')
+                ).not.toBeInTheDocument();
+            });
+        })
+        test('Manages search term state correctly', async () => {
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      name: 'pikachu',
+      abilities: [],
+    }),
+  });
+
+  const user = userEvent.setup();
+
+  render(<App />);
+
+  const input = screen.getByPlaceholderText('Search...');
+  const button = screen.getByText('Search');
+
+  await user.type(input, 'pikachu');
+  await user.click(button);
+
+  await waitFor(() => {
+    expect(fetch).toHaveBeenCalledWith(
+      'https://pokeapi.co/api/v2/pokemon/pikachu'
+    );
+  });
+});
     })
 })

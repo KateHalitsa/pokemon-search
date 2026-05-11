@@ -151,7 +151,7 @@ class App extends Component<{}, State> {
   
     }
   };
-  handleSearch = (query: string) => {
+  handleSearch = async (query: string) => {
     const trimmedValue = query.trim();
     if (trimmedValue === this.state.lastSearch) {
     return;
@@ -163,12 +163,11 @@ class App extends Component<{}, State> {
       results: []
     });
 
-      window.setTimeout(() => {
-      this.fetchData(trimmedValue);
-      this.setState({
-      loading: false,
-        });
-        }, 1500);
+      this.setState({ loading: true });
+
+    await this.fetchData(trimmedValue);
+
+    this.setState({ loading: false });
     localStorage.setItem(
         SEARCH_STORAGE_KEY,
         query
