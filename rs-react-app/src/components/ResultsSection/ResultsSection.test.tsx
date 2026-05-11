@@ -182,5 +182,21 @@ describe('Loading Component Tests',()=>{
         .not.toBeInTheDocument();
     });
   })
+  describe('Accessibility Tests',()=>{
+    test('Has appropriate ARIA labels for screen readers', () => {
+      render(
+        <ResultsSection
+          results={[]}
+          loading={true}
+          errorMessage=""
+          onErrorCheck={vi.fn()}
+        />
+      );
+
+      expect(
+        screen.getByLabelText('Loading')
+      ).toBeInTheDocument();
+    });  
+  })
 })
 
