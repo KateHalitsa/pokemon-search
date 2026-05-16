@@ -11,9 +11,9 @@ export type Props = {
   onErrorCheck: () => void;
 };
 
-class ResultsSection extends Component<Props> {
-  render() {
-    const {results,loading,errorMessage} = this.props;
+function ResultsSection (props:Props) {
+  
+    const {results,loading,errorMessage} = props;
 
     return (
       <section className="results-section">
@@ -28,11 +28,11 @@ class ResultsSection extends Component<Props> {
         <ResultTable results={results}/>))
         }
        <div className='error-wapper'>
-        <button className='error-btn' onClick={this.props.onErrorCheck}>Error</button>
+        <button className='error-btn' onClick={props.onErrorCheck}>Error</button>
        </div>
       </section>
     );
-  }
+  
 }
 
 export default ResultsSection;

@@ -2,8 +2,10 @@
 import './App.css'
 import SearchSection, { SEARCH_STORAGE_KEY } from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
+import { useLocalStorage } from './hooks/useLocalStorage';
+
 export type Pokemon = {
   name: string;
   url: string;
@@ -18,44 +20,11 @@ export type PokemonDetails = {
 };
 
 export type Item = {
-  id: number;
   name: string;
   description: string;
 };
-type State = {
-  lastSearch: string;
-  results: Item[];
-  loading: boolean;
-  errorMessage:string;
-  crash: boolean;
-  loadTimeout: number;
-};
-;
-class App extends Component<{}, State> {
-   state: State = {
-    lastSearch: '',
-    results: [],
-    loading:false,
-    errorMessage:'',
-    crash:false,
-    loadTimeout: 1500
-  };
 
-  causeAnError=()=>{
-    this.setState({
-    crash: true,
-  });
-  }
-  componentDidMount() {
-    const saved = localStorage.getItem(SEARCH_STORAGE_KEY) || '';
-
-    this.setState({
-      lastSearch: saved,
-      loading: true
-    });
-    this.fetchData(this.state.lastSearch);
-  }
-  getErrorMessage(status: number): string {
+  export function getErrorMessage(status: number): string {
   if (status === 404) {
     return 'Nothing found for your search';
   }
@@ -70,7 +39,31 @@ class App extends Component<{}, State> {
 
   return 'Unexpected error';
 }
-  fetchData = async (search: string) => {
+function App() {
+  const [results, setResults] = useState<Item[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [crash, setCrash] = useState<boolean>(false);
+
+  const {
+  storedValue: lastSearch,
+  setValue: setLastSearch,
+  } = useLocalStorage(
+    ''
+  );
+  function causeAnError(){
+    setCrash(
+    true,
+  );
+  }
+  useEffect(()=>{
+    setLoading(true);
+    
+    fetchData(lastSearch);
+  },[])
+
+  
+ async function fetchData (search: string) {
     let items: Item[];
     try {
 
@@ -79,11 +72,10 @@ class App extends Component<{}, State> {
       if (search) {
         response = await fetchPokemon(search.toLowerCase());
       if (!response.ok) {
-          this.setState({
-        results: [],
-        errorMessage: this.getErrorMessage(response.status),
-        loading: false
-      });
+        
+        setResults([]);
+        setErrorMessage(getErrorMessage(response.status));
+        setLoading(false);
 
       return;
         }
@@ -98,7 +90,6 @@ class App extends Component<{}, State> {
         {
           name: details.name,
           description: 'Abilities: ' + abilities.join(', '),
-          id: 0
         },
       ];
       } else {
@@ -106,11 +97,10 @@ class App extends Component<{}, State> {
           'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
         );
        if (!response.ok) {
-          this.setState({
-        results: [],
-        errorMessage: this.getErrorMessage(response.status),
-        loading: false
-      });
+          
+        setResults([]);
+        setErrorMessage(getErrorMessage(response.status));
+        setLoading(false);
       return;
         }
         json = await response.json();
@@ -129,6 +119,7 @@ class App extends Component<{}, State> {
             );
 
             return {
+              
               name: details.name,
               description:
                 'Abilities: ' + abilities.join(', '),
@@ -136,53 +127,43 @@ class App extends Component<{}, State> {
           })
       )
     }
-      this.setState({
-        results: items,
-        loading:false
-      });
+      setResults(items)
+      setLoading(false);
     } catch{
-       this.setState({
-      results: [],
-      errorMessage: 'Network connection error',
-      loading: false
-    });
-  
+      setResults([]);
+      setErrorMessage('Network connection error');
+      setLoading(false);
     }
   };
-  handleSearch = async (query: string) => {
+  async function handleSearch(query: string){
     const trimmedValue = query.trim();
-    if (trimmedValue === this.state.lastSearch) {
+    if (trimmedValue === lastSearch) {
     return;
     }
-    this.setState({
-      lastSearch: trimmedValue,
-      loading: true,
-      errorMessage: '',
-      results: []
-    });
+    
+      setLastSearch(trimmedValue);
+      setLoading(true);
+      setErrorMessage('');
+      setResults([]);
+    
 
-      this.setState({ loading: true });
 
-    await this.fetchData(trimmedValue);
+    await fetchData(trimmedValue);
 
-    this.setState({ loading: false });
-    localStorage.setItem(
-        SEARCH_STORAGE_KEY,
-        query
-    );
+    setLoading(false);
   };
 
-  render() {
-    if (this.state.crash) {
+  
+    if (crash) {
     throw new Error('Test application error');
     }
     return (
       <>
-        <SearchSection onSearch={this.handleSearch} />
-        <ResultsSection results={this.state.results} loading={this.state.loading} errorMessage={this.state.errorMessage} onErrorCheck={this.causeAnError}/>
+        <SearchSection onSearch={handleSearch} />
+        <ResultsSection results={results} loading={loading} errorMessage={errorMessage} onErrorCheck={causeAnError}/>
       </>
     );
   }
-}
+
 
 export default App

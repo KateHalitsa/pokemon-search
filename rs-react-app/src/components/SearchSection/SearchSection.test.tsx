@@ -27,6 +27,8 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+    vi.unstubAllGlobals();
+
 });
 describe('SearchSection', () => {
     describe('Rendering Tests',()=>{

@@ -1,58 +1,51 @@
-import { Component, type ReactNode } from "react";
+import React from "react";
 import './SearchSection.css';
- export const SEARCH_STORAGE_KEY = "rssSearch";
-type State = {
-  lastSearch: string;
-};
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+
+export const SEARCH_STORAGE_KEY = "rssSearch";
+
 type Props = {
   onSearch: (value: string) => void;
 };
-class SearchSection extends Component<Props, State>{
-    constructor(props: Props) {
-    super(props);
-    this.state = {lastSearch: '',};
-    }
-    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
 
-    this.setState({
-        lastSearch: value,
-    });
+function SearchSection(props: Props) {
+  const {
+    storedValue: lastSearch,
+    setValue: setLastSearch,
+  } = useLocalStorage(
+    ''
+  );
 
-    localStorage.setItem(
-        SEARCH_STORAGE_KEY,
-        value.trim()
-    );
-    };
-    handleSearch = () => {
-    this.props.onSearch(this.state.lastSearch);
-    };
-    componentDidMount() {
-    const saved = localStorage.getItem(SEARCH_STORAGE_KEY);
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    setLastSearch(e.target.value);
+  }
 
-    if (saved) {
-      this.setState({
-        lastSearch: saved,
-      });
-    }
-    }
-    render(): ReactNode {
-        return(
-            <section className="search-section">
-                <div className="search-wapper">
-                    <input className="search-input"
-                    type="text"
-                    placeholder="Search..."
-                    value = {this.state.lastSearch}
-                    onChange={this.handleChange}>
-                    </input>
-                    <button className="search-btn"
-                    onClick={this.handleSearch}>
-                        Search
-                    </button>
-                </div>
-            </section>
-        )
-    }
+  function handleSearch() {
+    props.onSearch(lastSearch);
+  }
+
+  return (
+    <section className="search-section">
+      <div className="search-wapper">
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search..."
+          value={lastSearch}
+          onChange={handleChange}
+        />
+
+        <button
+          className="search-btn"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
+      </div>
+    </section>
+  );
 }
-export default SearchSection
+
+export default SearchSection;

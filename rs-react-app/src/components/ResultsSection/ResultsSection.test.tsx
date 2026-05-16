@@ -6,8 +6,8 @@ import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ResultsSection from "./ResultsSection";
-import App from "../../App";
-
+import App, { type Item } from "../../App";
+import { getErrorMessage } from '../../App';
 afterEach(() => {
   cleanup();
 });
@@ -33,7 +33,7 @@ describe('Results/CardList Component Tests', () => {
         expect(screen.getByText('Charmander')).toBeInTheDocument();
         })
         test('Renders correct number of items when data is provided', async()=>{
-        const items = [];  
+        const items: Item[] = [];  
         const onErrorCheck= vi.fn();
         render(
             <ResultsSection
@@ -118,20 +118,19 @@ test('Handles empty data gracefully', () => {
       });
 
       describe('HTTP error messages', () => {
-        const app = new App({});
 
         test('shows 404 message', () => {
-          expect(app.getErrorMessage(404))
+          expect(getErrorMessage(404))
             .toBe('Nothing found for your search');
         });
 
         test('shows 400 message', () => {
-          expect(app.getErrorMessage(400))
+          expect(getErrorMessage(400))
             .toBe('Bad request');
         });
 
         test('shows 500 message', () => {
-          expect(app.getErrorMessage(500))
+          expect(getErrorMessage(500))
             .toBe('Server is temporarily unavailable');
         });
       });

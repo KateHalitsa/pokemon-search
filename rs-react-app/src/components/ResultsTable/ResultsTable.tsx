@@ -6,11 +6,10 @@ export type PropsTable = {
   results: Item[];
 
 };
-class ResultTable extends Component<PropsTable>{
-    render(){
-        const items = this.props.results;
-   
+function ResultTable (props:PropsTable){
 
+    const items = props.results;
+   
     return (
          <div className="results-table">
         <div className="table-header">
@@ -26,5 +25,5 @@ class ResultTable extends Component<PropsTable>{
         </div>
     );
 } 
-}
+
 export default ResultTable;
