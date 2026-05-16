@@ -5,6 +5,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import { afterEach } from 'vitest';
 import App from "../../App";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 
 describe('Error Boundary Tests', () => {
     beforeEach(() => {
@@ -69,7 +70,9 @@ describe('Error Boundary Tests', () => {
 
             render(
                 <ErrorBoundary>
-                <App />
+                    <MemoryRouter>
+                        <App />
+                    </MemoryRouter>
                 </ErrorBoundary>
             );
             const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -84,7 +87,9 @@ describe('Error Boundary Tests', () => {
 
             render(
                 <ErrorBoundary>
-                <App />
+                    <MemoryRouter>
+                        <App />
+                    </MemoryRouter>
                 </ErrorBoundary>
             );
             await user.click(screen.getByText('Error'));

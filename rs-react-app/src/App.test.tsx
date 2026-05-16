@@ -4,6 +4,7 @@ import { test, expect, beforeEach, vi, describe, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import type { MockedFunction } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router';
 
 beforeEach(() => {
   const store: Record<string, string> = {};
@@ -45,8 +46,9 @@ describe('Main App Component Tests',()=>{
             })
         } as Response);
 
-        render(<App />);
-
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
         await waitFor(() => {
             expect(fetch).toHaveBeenCalled();
         });
@@ -64,8 +66,9 @@ describe('Main App Component Tests',()=>{
             }),
         } as Response);
 
-        render(<App />);
-
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
         expect(screen.getByTestId('loader')).toBeInTheDocument();
 
         await waitFor(() => {
@@ -84,8 +87,9 @@ describe('Main App Component Tests',()=>{
             }),
         });
 
-        render(<App />);
-
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
         await waitFor(() => {
             expect(fetch).toHaveBeenCalledWith(
             'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
@@ -119,7 +123,9 @@ describe('Main App Component Tests',()=>{
                 }),
                 });
 
-            render(<App />);
+            render(  <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
 
             await waitFor(() => {
                 expect(screen.getByText('pikachu')).toBeInTheDocument();
@@ -136,7 +142,10 @@ describe('Main App Component Tests',()=>{
                     status: 404,
                 });
 
-                render(<App />);
+
+            render(  <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
 
                 await waitFor(() => {
                     expect(
@@ -150,8 +159,11 @@ describe('Main App Component Tests',()=>{
                     status: 500,
                 });
 
-                render(<App />);
-
+                render(
+                <MemoryRouter>
+                    <App />
+                </MemoryRouter>
+                );
                 await waitFor(() => {
                     expect(
                     screen.getByText('Server is temporarily unavailable')
@@ -164,8 +176,10 @@ describe('Main App Component Tests',()=>{
                     status: 400,
                 });
 
-                render(<App />);
 
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
                 await waitFor(() => {
                     expect(
                     screen.getByText('Bad request')
@@ -203,8 +217,11 @@ describe('Main App Component Tests',()=>{
                     }),
                     });
 
-                render(<App />);
-
+                render(
+                <MemoryRouter>
+                    <App />
+                </MemoryRouter>
+                );
                 await waitFor(() => {
                     expect(screen.getByText('pikachu')).toBeInTheDocument();
                 });
@@ -223,8 +240,9 @@ describe('Main App Component Tests',()=>{
                     status: 404,
                 });
 
-                render(<App />);
-
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
                 await waitFor(() => {
                     expect(
                     screen.getByText('Nothing found for your search')
@@ -247,8 +265,9 @@ describe('Main App Component Tests',()=>{
 
   const user = userEvent.setup();
 
-  render(<App />);
-
+            render( <MemoryRouter>
+                        <App />
+                    </MemoryRouter>);
   const input = screen.getByPlaceholderText('Search...');
   const button = screen.getByText('Search');
 

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
+import { useSearchParams } from 'react-router';
 
 export type Pokemon = {
   name: string;
@@ -40,15 +41,21 @@ export type Item = {
 
   return 'Unexpected error';
 }
+
 function App() {
   const [results, setResults] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [crash, setCrash] = useState<boolean>(false);
-  const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
   const ITEMS_PER_PAGE = 10;
+
+  const [searchParams, setSearchParams] =
+  useSearchParams();
+
+const page =
+  Number(searchParams.get('page')) || 1;
 
   const totalPages = Math.ceil(
   totalCount / ITEMS_PER_PAGE
@@ -64,6 +71,13 @@ function App() {
     true,
   );
   }
+  function handlePageChange(
+  newPage: number
+) {
+  setSearchParams({
+    page: String(newPage),
+  });
+}
   useEffect(()=>{
     setLoading(true);
     
@@ -146,6 +160,7 @@ function App() {
       setLoading(false);
     }
   };
+  
   async function handleSearch(query: string){
     const trimmedValue = query.trim();
    if (trimmedValue === lastSearch) {
@@ -153,7 +168,9 @@ function App() {
     }
    setErrorMessage('');
   setResults([]);
-  setPage(1);
+  setSearchParams({
+    page: '1',
+  }); 
   setLastSearch(trimmedValue);
   };
 
@@ -168,7 +185,7 @@ function App() {
           value={{
             page,
             totalPages,
-            setPage,
+            setPage:handlePageChange,
             setTotalCount
           }}
         >
