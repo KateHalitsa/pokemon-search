@@ -29,6 +29,6 @@
     display: flex;
     justify-content: end;
 }
-.error-btn{
+.error-btn,.pad-btn{
    background-color:#fdba74;
 }

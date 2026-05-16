@@ -5,6 +5,7 @@ import ResultsSection from './components/ResultsSection/ResultsSection'
 import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { PaginationContext } from './context/PaginationContext';
 
 export type Pokemon = {
   name: string;
@@ -44,7 +45,14 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [crash, setCrash] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
+  const ITEMS_PER_PAGE = 10;
+
+  const totalPages = Math.ceil(
+  totalCount / ITEMS_PER_PAGE
+);
   const {
   storedValue: lastSearch,
   setValue: setLastSearch,
@@ -59,12 +67,14 @@ function App() {
   useEffect(()=>{
     setLoading(true);
     
-    fetchData(lastSearch);
-  },[])
+    fetchData(lastSearch,page);
+  },[page,lastSearch])
 
   
- async function fetchData (search: string) {
+ async function fetchData (search: string,  currentPage: number
+) {
     let items: Item[];
+    const offset = (currentPage - 1) * 10;
     try {
 
       let json;
@@ -76,12 +86,11 @@ function App() {
         setResults([]);
         setErrorMessage(getErrorMessage(response.status));
         setLoading(false);
-
       return;
         }
          const details: PokemonDetails =
         await response.json();
-
+        
       const abilities = details.abilities.map(
         (a) => a.ability.name
       );
@@ -92,9 +101,10 @@ function App() {
           description: 'Abilities: ' + abilities.join(', '),
         },
       ];
+      setTotalCount(items.length);
       } else {
         response = await fetch(
-          'https://pokeapi.co/api/v2/pokemon?offset=0&limit=10'
+          `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=10`
         );
        if (!response.ok) {
           
@@ -104,7 +114,8 @@ function App() {
       return;
         }
         json = await response.json();
-
+        setTotalCount(json.count);
+        
          items = await Promise.all(
           json.results.map(async (pokemon: Pokemon) => {
             const detailsResponse = await fetch(
@@ -137,20 +148,13 @@ function App() {
   };
   async function handleSearch(query: string){
     const trimmedValue = query.trim();
-    if (trimmedValue === lastSearch) {
+   if (trimmedValue === lastSearch) {
     return;
     }
-    
-      setLastSearch(trimmedValue);
-      setLoading(true);
-      setErrorMessage('');
-      setResults([]);
-    
-
-
-    await fetchData(trimmedValue);
-
-    setLoading(false);
+   setErrorMessage('');
+  setResults([]);
+  setPage(1);
+  setLastSearch(trimmedValue);
   };
 
   
@@ -160,8 +164,16 @@ function App() {
     return (
       <>
         <SearchSection onSearch={handleSearch} />
+        <PaginationContext.Provider
+          value={{
+            page,
+            totalPages,
+            setPage,
+            setTotalCount
+          }}
+        >
         <ResultsSection results={results} loading={loading} errorMessage={errorMessage} onErrorCheck={causeAnError}/>
-      </>
+      </PaginationContext.Provider></>
     );
   }
 

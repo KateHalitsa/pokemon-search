@@ -1,7 +1,7 @@
-import { Component } from 'react';
 import './ResultsSection.css';
 import ResultTable from '../ResultsTable/ResultsTable';
 import type { Item } from '../../App';
+import Pagination from '../Pagination/Pagination';
 
 
 export type Props = {
@@ -25,7 +25,11 @@ function ResultsSection (props:Props) {
         ) : (results.length === 0 ? (
           <p>{errorMessage}</p>
         ) : (
-        <ResultTable results={results}/>))
+        <div>
+          <ResultTable results={results} />
+           <Pagination/>
+        </div>
+      ))
         }
        <div className='error-wapper'>
         <button className='error-btn' onClick={props.onErrorCheck}>Error</button>
