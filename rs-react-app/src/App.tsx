@@ -54,11 +54,18 @@ function App() {
   const [searchParams, setSearchParams] =
   useSearchParams();
 
-const page =
-  Number(searchParams.get('page')) || 1;
+const rawPage = Number(
+  searchParams.get('page')
+) || 1;
+
+
 
   const totalPages = Math.ceil(
   totalCount / ITEMS_PER_PAGE
+);
+const page = Math.min(
+  Math.max(rawPage, 1),
+  totalPages || 1
 );
   const {
   storedValue: lastSearch,
@@ -74,16 +81,24 @@ const page =
   function handlePageChange(
   newPage: number
 ) {
+  
   setSearchParams({
     page: String(newPage),
   });
 }
-  useEffect(()=>{
-    setLoading(true);
-    
-    fetchData(lastSearch,page);
-  },[page,lastSearch])
+useEffect(() => {
+  if (rawPage > totalPages && totalPages > 0) {
+    setSearchParams({
+      page: String(totalPages),
+    });
 
+    return;
+  }
+
+  setLoading(true);
+
+  fetchData(lastSearch, page);
+}, [page, lastSearch, totalPages]);
   
  async function fetchData (search: string,  currentPage: number
 ) {
@@ -170,7 +185,7 @@ const page =
   setResults([]);
   setSearchParams({
     page: '1',
-  }); 
+  });
   setLastSearch(trimmedValue);
   };
 
