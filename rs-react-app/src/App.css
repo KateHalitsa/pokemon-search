@@ -16,3 +16,24 @@
   box-sizing: border-box;
   margin: 10px;
 }
+.layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.left-panel {
+  flex: 1;
+}
+
+.right-panel {
+  width: 400px;
+  min-height: 300px;
+  padding-left: 20px;
+  background: #fcd38c;
+  border-radius: 12px;
+}
+
+.right-panel:not(:has(.pokemon-details)) {
+  display: none;
+}

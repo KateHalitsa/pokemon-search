@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
-import { useSearchParams } from 'react-router';
+import { Outlet, useSearchParams } from 'react-router';
 
 export type Pokemon = {
   name: string;
@@ -98,8 +98,17 @@ useEffect(() => {
   setLoading(true);
 
   fetchData(lastSearch, page);
-}, [page, lastSearch, totalPages]);
-  
+}, [page, lastSearch]);
+useEffect(() => {
+    if (
+      rawPage > totalPages &&
+      totalPages > 0
+    ) {
+      setSearchParams({
+        page: String(totalPages),
+      });
+    }
+  }, [rawPage, totalPages]);  
  async function fetchData (search: string,  currentPage: number
 ) {
     let items: Item[];
@@ -194,18 +203,24 @@ useEffect(() => {
     throw new Error('Test application error');
     }
     return (
-      <>
-        <SearchSection onSearch={handleSearch} />
-        <PaginationContext.Provider
-          value={{
-            page,
-            totalPages,
-            setPage:handlePageChange,
-            setTotalCount
-          }}
-        >
-        <ResultsSection results={results} loading={loading} errorMessage={errorMessage} onErrorCheck={causeAnError}/>
-      </PaginationContext.Provider></>
+        <div className="layout">
+          <div className="left-panel">
+            <SearchSection onSearch={handleSearch} />
+            <PaginationContext.Provider
+              value={{
+                page,
+                totalPages,
+                setPage:handlePageChange,
+                setTotalCount
+              }}
+            >
+            <ResultsSection results={results} loading={loading} errorMessage={errorMessage} onErrorCheck={causeAnError}/>  
+            </PaginationContext.Provider>
+          </div>
+          <div className="right-panel">
+            <Outlet />
+          </div>
+          </div>
     );
   }
 

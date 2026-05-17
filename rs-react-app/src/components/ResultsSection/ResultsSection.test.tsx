@@ -8,6 +8,8 @@ import userEvent from '@testing-library/user-event';
 import ResultsSection from "./ResultsSection";
 import App, { type Item } from "../../App";
 import { getErrorMessage } from '../../App';
+import { PaginationContext } from "../../context/PaginationContext";
+import { MemoryRouter } from "react-router";
 afterEach(() => {
   cleanup();
 });
@@ -22,11 +24,20 @@ describe('Results/CardList Component Tests', () => {
             { id: 3, name: 'Charmander', description: 'Abilities: blaze, solar-power' },
         ];  
 
-        render(
-            <ResultTable
-            results={items}
-            />
-        );
+       render(
+  <MemoryRouter>
+    <PaginationContext.Provider
+      value={{
+        page: 1,
+        totalPages: 1,
+        setPage: vi.fn(),
+        setTotalCount: vi.fn(),
+      }}
+    >
+      <ResultTable results={items} />
+    </PaginationContext.Provider>
+  </MemoryRouter>
+);
 
         expect(screen.getByText('Pikachu')).toBeInTheDocument();
         expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
@@ -36,12 +47,20 @@ describe('Results/CardList Component Tests', () => {
         const items: Item[] = [];  
         const onErrorCheck= vi.fn();
         render(
+                      <PaginationContext.Provider
+              value={{
+                page: 1,
+                totalPages: 1,
+                setPage: vi.fn(),
+                setTotalCount: vi.fn(),
+              }}
+            >
             <ResultsSection
             results={items}
             loading = {false}
             errorMessage="Nothing found for your search"
             onErrorCheck ={onErrorCheck}
-            />
+            /></PaginationContext.Provider>
         );
 
         expect(screen.getByText('Nothing found for your search')).toBeInTheDocument();
@@ -66,12 +85,20 @@ describe('Results/CardList Component Tests', () => {
             { id: 2, name: 'Bulbasaur', description: 'Abilities: overgrow, chlorophyll' },
             { id: 3, name: 'Charmander', description: 'Abilities: blaze, solar-power' },
         ];
-
-          render(
-            <ResultTable
-            results={items}
-            />
-        );
+render(
+  <MemoryRouter>
+    <PaginationContext.Provider
+      value={{
+        page: 1,
+        totalPages: 1,
+        setPage: vi.fn(),
+        setTotalCount: vi.fn(),
+      }}
+    >
+      <ResultTable results={items} />
+    </PaginationContext.Provider>
+  </MemoryRouter>
+);
 
         expect(screen.getByText('Pikachu')).toBeInTheDocument();
         expect(screen.getByText('Abilities: static, lightning-rod')).toBeInTheDocument();
@@ -85,8 +112,18 @@ describe('Results/CardList Component Tests', () => {
       })
 
 test('Handles empty data gracefully', () => {
-  render(<ResultTable results={[]} />);
-
+render(
+  <PaginationContext.Provider
+    value={{
+      page: 1,
+      totalPages: 1,
+      setPage: vi.fn(),
+      setTotalCount: vi.fn(),
+    }}
+  >
+    <ResultTable results={[]} />
+  </PaginationContext.Provider>
+);
   expect(screen.getByText('Name')).toBeInTheDocument();
   expect(screen.getByText('Description')).toBeInTheDocument();
 

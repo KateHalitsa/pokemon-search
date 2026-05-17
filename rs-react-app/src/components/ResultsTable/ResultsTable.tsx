@@ -1,6 +1,8 @@
 import { Component } from "react";
 import './ResultsTable.css';
 import type { Item } from "../../App";
+import { Link } from "react-router";
+import { usePagination } from "../../context/PaginationContext";
 
 export type PropsTable = {
   results: Item[];
@@ -9,7 +11,7 @@ export type PropsTable = {
 function ResultTable (props:PropsTable){
 
     const items = props.results;
-   
+   const { page } = usePagination();
     return (
          <div className="results-table">
         <div className="table-header">
@@ -18,7 +20,13 @@ function ResultTable (props:PropsTable){
         </div>
         {items.map((item)=>(
         <div className="table-row" key={item.name}>
-            <div>{item.name}</div>
+            <div>
+            <Link
+              to={`pokemon/${item.name}?page=${page}`}
+            >
+              {item.name}
+            </Link>
+          </div>
             <div>{item.description}</div>
           </div>
         ))}
