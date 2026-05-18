@@ -1,0 +1,37 @@
+.results-table {
+  width: 90%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 10px;
+}
+
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.table-header {
+  background: #f8fafc;
+  font-weight: 700;
+  border-bottom: 2px solid #ddd;
+}
+
+.table-header div,
+.table-row div {
+  padding: 18px 22px;
+}
+
+.table-row {
+  border-bottom: 1px solid #eee;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background: #fff7ed;
+}
