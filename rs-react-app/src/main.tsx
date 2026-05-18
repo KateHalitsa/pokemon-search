@@ -5,12 +5,20 @@ import App from './App.tsx'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import PokemonDetails from './components/PokemonDetails/PokemonDetails.tsx'
+import AboutPage from './pages/About/About.tsx'
+import Navbar from'./components/Navbar/Navbar.tsx'
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
+            <Navbar />
+
         <Routes>
+
+          <Route path="/about" element={<AboutPage />} />
+
           <Route
             path="/pokemon-search"
             element={<App />}

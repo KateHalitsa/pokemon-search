@@ -1,0 +1,14 @@
+.about{
+    flex: 1;
+    height: 90%;
+    background-color:#F09367;
+    border-radius: 12px;
+    text-align: justify;
+    padding: 10%;
+}
+.about-author{
+    background: #fcd38c;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 50px;
+}

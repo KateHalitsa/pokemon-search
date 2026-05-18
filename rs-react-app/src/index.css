@@ -60,7 +60,7 @@
   flex-direction: column;
   box-sizing: border-box;
   background-color: #47622A;
-    padding: 10%;
+    padding: 10px 10%;
     gap: 10px
 }
 
@@ -72,10 +72,12 @@ h1,
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  color: var(--text-h);
 }
-
+h2{
+    color:var(--text) ;
+}
 h1 {
+   color: var(--text-h);
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
