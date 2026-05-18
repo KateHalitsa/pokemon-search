@@ -77,7 +77,7 @@ function PokemonDetails() {
   return (
     <div className="pokemon-details">
       <button
-      onClick={() => navigate('/pokemon-search')}
+      onClick={() => navigate('/search')}
       >
         Close
       </button>

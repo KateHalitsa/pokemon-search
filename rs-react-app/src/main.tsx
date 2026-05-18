@@ -7,12 +7,13 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import PokemonDetails from './components/PokemonDetails/PokemonDetails.tsx'
 import AboutPage from './pages/About/About.tsx'
 import Navbar from'./components/Navbar/Navbar.tsx'
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
+      <BrowserRouter  basename="/pokemon-search">
             <Navbar />
 
         <Routes>
@@ -20,7 +21,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/about" element={<AboutPage />} />
 
           <Route
-            path="/pokemon-search"
+            path="/search"
             element={<App />}
           >
             <Route
@@ -28,6 +29,10 @@ createRoot(document.getElementById('root')!).render(
               element={<PokemonDetails />}
             />
           </Route>
+           <Route
+              path="*"
+              element={<NotFoundPage />}
+            />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
