@@ -1,12 +1,11 @@
-import { render, screen, waitFor  } from "@testing-library/react";
+import { render, screen  } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import ResultTable from "../ResultsTable/ResultsTable";
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import ResultsSection from "./ResultsSection";
-import App, { type Item } from "../../App";
+import  { type Item } from "../../App";
 import { getErrorMessage } from '../../App';
 import { PaginationContext } from "../../context/PaginationContext";
 import { MemoryRouter } from "react-router";

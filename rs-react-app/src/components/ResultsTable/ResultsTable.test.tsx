@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import ResultTable from "../ResultsTable/ResultsTable";
 import '@testing-library/jest-dom/vitest';

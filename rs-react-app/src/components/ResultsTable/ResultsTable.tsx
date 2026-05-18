@@ -1,4 +1,3 @@
-import { Component } from "react";
 import './ResultsTable.css';
 import type { Item } from "../../App";
 import { Link } from "react-router";

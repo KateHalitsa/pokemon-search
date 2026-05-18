@@ -1,6 +1,6 @@
 
 import './App.css'
-import SearchSection, { SEARCH_STORAGE_KEY } from './components/SearchSection/SearchSection'
+import SearchSection from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
 import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
