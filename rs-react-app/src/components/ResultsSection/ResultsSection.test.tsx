@@ -8,7 +8,7 @@ import ResultsSection from "./ResultsSection";
 import  { type Item } from "../../App";
 import { getErrorMessage } from '../../App';
 import { PaginationContext } from "../../context/PaginationContext";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 afterEach(() => {
   cleanup();
 });

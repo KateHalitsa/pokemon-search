@@ -6,7 +6,10 @@ import { useEffect, useState } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
-import { Outlet, useSearchParams } from 'react-router';
+import { Outlet, useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from './store/store';
+import { setCrash, setErrorMessage, setLoading, setResults, setTotalCount } from './store/pokemonSlice';
 
 export type Pokemon = {
   name: string;
@@ -43,11 +46,19 @@ export type Item = {
 }
 
 function App() {
-  const [results, setResults] = useState<Item[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [crash, setCrash] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState(0);
+  const dispatch =
+  useDispatch<AppDispatch>();
+
+const {
+  results,
+  loading,
+  errorMessage,
+  crash,
+  totalCount,
+} = useSelector(
+  (state: RootState) =>
+    state.pokemon
+);
 
   const ITEMS_PER_PAGE = 10;
 
@@ -74,9 +85,7 @@ const page = Math.min(
     ''
   );
   function causeAnError(){
-    setCrash(
-    true,
-  );
+    dispatch(setCrash(true));
   }
   function handlePageChange(
   newPage: number
@@ -95,7 +104,7 @@ useEffect(() => {
     return;
   }
 
-  setLoading(true);
+  dispatch(setLoading(true));
 
   fetchData(lastSearch, page);
 }, [page, lastSearch]);
@@ -121,9 +130,9 @@ useEffect(() => {
         response = await fetchPokemon(search.toLowerCase());
       if (!response.ok) {
         
-        setResults([]);
-        setErrorMessage(getErrorMessage(response.status));
-        setLoading(false);
+        dispatch(setResults([]));
+        dispatch(setErrorMessage(getErrorMessage(response.status)));
+        dispatch(setLoading(false));
       return;
         }
          const details: PokemonDetails =
@@ -139,20 +148,20 @@ useEffect(() => {
           description: 'Abilities: ' + abilities.join(', '),
         },
       ];
-      setTotalCount(items.length);
+      dispatch(setTotalCount(items.length));
       } else {
         response = await fetch(
           `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=10`
         );
        if (!response.ok) {
           
-        setResults([]);
-        setErrorMessage(getErrorMessage(response.status));
-        setLoading(false);
+        dispatch(setResults([]));
+        dispatch(setErrorMessage(getErrorMessage(response.status)));
+        dispatch(setLoading(false));
       return;
         }
         json = await response.json();
-        setTotalCount(json.count);
+        dispatch(setTotalCount(json.count));
         
          items = await Promise.all(
           json.results.map(async (pokemon: Pokemon) => {
@@ -168,7 +177,6 @@ useEffect(() => {
             );
 
             return {
-              
               name: details.name,
               description:
                 'Abilities: ' + abilities.join(', '),
@@ -176,12 +184,12 @@ useEffect(() => {
           })
       )
     }
-      setResults(items)
-      setLoading(false);
+      dispatch(setResults(items));
+      dispatch(setLoading(false));
     } catch{
-      setResults([]);
-      setErrorMessage('Network connection error');
-      setLoading(false);
+      dispatch(setResults([]));
+      dispatch(setErrorMessage('Network connection error'));
+      dispatch(setLoading(false));
     }
   };
   
@@ -190,8 +198,8 @@ useEffect(() => {
    if (trimmedValue === lastSearch) {
     return;
     }
-   setErrorMessage('');
-  setResults([]);
+   dispatch(setErrorMessage(''));
+  dispatch(setResults([]));
   setSearchParams({
     page: '1',
   });
@@ -226,3 +234,7 @@ useEffect(() => {
 
 
 export default App
+
+
+
+

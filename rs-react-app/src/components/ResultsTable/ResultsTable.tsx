@@ -1,6 +1,6 @@
 import './ResultsTable.css';
 import type { Item } from "../../App";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { usePagination } from "../../context/PaginationContext";
 
 export type PropsTable = {

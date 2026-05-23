@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type PokemonDetailsType = {
   name: string;
@@ -19,6 +20,7 @@ function PokemonDetails() {
   const { name } = useParams();
 
   const navigate = useNavigate();
+  
 
   const [pokemon, setPokemon] =
     useState<PokemonDetailsType | null>(null);
@@ -48,6 +50,7 @@ function PokemonDetails() {
 
         const data = await response.json();
 
+        
         setPokemon(data);
       } catch {
         setError('Network error');

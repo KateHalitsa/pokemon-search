@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import ResultTable from "../ResultsTable/ResultsTable";
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 import { PaginationContext } from "../../context/PaginationContext";
 
 describe('Card/Item Component Tests', () => {

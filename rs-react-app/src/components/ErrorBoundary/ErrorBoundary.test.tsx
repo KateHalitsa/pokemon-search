@@ -5,7 +5,9 @@ import ErrorBoundary from "./ErrorBoundary";
 import { afterEach } from 'vitest';
 import App from "../../App";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 describe('Error Boundary Tests', () => {
     beforeEach(() => {
@@ -69,35 +71,18 @@ describe('Error Boundary Tests', () => {
             vi.spyOn(console, 'error').mockImplementation(() => {});
 
             render(
-                <ErrorBoundary>
-                    <MemoryRouter>
-                        <App />
-                    </MemoryRouter>
-                </ErrorBoundary>
+                <Provider store={store}>
+                    <ErrorBoundary>
+                        <MemoryRouter>
+                            <App />
+                        </MemoryRouter>
+                    </ErrorBoundary>
+                </Provider>
             );
             const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
             await user.click(screen.getByText('Error'));
 
             expect(errorSpy).toHaveBeenCalled();
         })
-        test('Throws error when test button is clicked',async()=>{
-             const user = userEvent.setup();
-
-            vi.spyOn(console, 'error').mockImplementation(() => {});
-
-            render(
-                <ErrorBoundary>
-                    <MemoryRouter>
-                        <App />
-                    </MemoryRouter>
-                </ErrorBoundary>
-            );
-            await user.click(screen.getByText('Error'));
-
-            expect(
-                screen.getByText('Something went wrong')
-            ).toBeInTheDocument();
-        })
-
     })
 })

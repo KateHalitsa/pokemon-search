@@ -4,7 +4,9 @@ import App, { type PokemonDetails } from "../../App";
 import { fetchPokemon } from "../../components/api/pokemonApi";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 vi.mock("../../components/api/pokemonApi", () => ({
   fetchPokemon: vi.fn(),
@@ -49,9 +51,11 @@ describe("API mock test", () => {
 
     
     render(
-        <MemoryRouter>
-            <App />
-        </MemoryRouter>
+          <Provider store={store}>
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+          </Provider>
     );
 
     const input = screen.getByPlaceholderText("Search...");
@@ -70,9 +74,11 @@ describe("API mock test", () => {
     mockedFetchPokemon.mockRejectedValue(new Error("Network error"));
 
     render(
-        <MemoryRouter>
-            <App />
-        </MemoryRouter>
+          <Provider store={store}>
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+          </Provider>
     );
     const input = screen.getByPlaceholderText("Search...");
     const button = screen.getByText("Search");
