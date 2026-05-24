@@ -1,7 +1,6 @@
 .search-section{
     flex: 1;
-    background: #fcd38c;
-    border: 1px solid #fed7aa;
+    background: var(--second-panel-color);
     border-radius: 16px;
 
     display: flex;
@@ -37,7 +36,7 @@
   box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.15);
 }
 .search-btn{
-     background-color:#F09367;
+     background-color:var(--first-panel-color);
 }
 .search-btn:hover {
   background: #ea580c;

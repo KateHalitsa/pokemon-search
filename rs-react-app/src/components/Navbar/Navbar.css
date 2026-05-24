@@ -1,18 +1,19 @@
+@import url('../../index.css');
+
 .navbar {
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: #F09367;
+  background: var(--first-panel-color);
   border-radius: 16px;
 }
 
 .navbar a {
   text-decoration: none;
   font-weight: bold;
-  color: #af6f52;
+  color:var(--nav-disable);
 }
 
 .navbar a.active {
-  color:#fcd38c;
-
+  color:var(--nav-active);
 }

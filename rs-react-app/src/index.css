@@ -49,7 +49,28 @@
     filter: invert(1) brightness(2);
   }
 }
+.light {
+  --bg-color: #47622A;
+  --first-panel-color:#F09367;
+  --second-panel-color:#fcd38c;
+  --pad-color: #fdba74;
+  --nav-active: #fcd38c;
+  --nav-disable:#af6f52;
+}
 
+.dark {
+  --bg-color: #281E3C;
+  --first-panel-color:#3A3459;
+  --second-panel-color:#71557A;
+  --pad-color: #4d3d79;
+  --text: #f3c8dd;
+  --nav-active: #f3c8dd;
+  --nav-disable:#71557A;
+
+}
+.error-btn, .pad-btn {
+    background-color: var(--pad-color);
+}
 #root {
   width: 100%;
   margin: 0 auto;
@@ -59,7 +80,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background-color: #47622A;
+  background-color:var(--bg-color);
     padding: 10px 10%;
     gap: 10px
 }

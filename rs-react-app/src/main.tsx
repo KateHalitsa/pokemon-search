@@ -10,35 +10,38 @@ import Navbar from'./components/Navbar/Navbar.tsx'
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage.tsx'
 import { Provider } from 'react-redux'
 import { store } from './store/store.ts'
+import { ThemeProvider } from './context/ThemeContext.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-  <StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter  basename="/pokemon-search">
-            <Navbar />
+    <ThemeProvider>
+      <StrictMode>
+        <ErrorBoundary>
+          <BrowserRouter  basename="/pokemon-search">
+                <Navbar />
 
-        <Routes>
+            <Routes>
 
-          <Route path="/about" element={<AboutPage />} />
+              <Route path="/about" element={<AboutPage />} />
 
-          <Route
-            path="/search"
-            element={<App />}
-          >
-            <Route
-              path="pokemon/:name"
-              element={<PokemonDetails />}
-            />
-          </Route>
-           <Route
-              path="*"
-              element={<NotFoundPage />}
-            />
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
-  </StrictMode>
+              <Route
+                path="/search"
+                element={<App />}
+              >
+                <Route
+                  path="pokemon/:name"
+                  element={<PokemonDetails />}
+                />
+              </Route>
+              <Route
+                  path="*"
+                  element={<NotFoundPage />}
+                />
+            </Routes>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </StrictMode>
+    </ThemeProvider>
   </Provider>
 )

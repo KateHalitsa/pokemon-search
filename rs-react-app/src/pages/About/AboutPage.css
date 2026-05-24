@@ -1,13 +1,14 @@
 .about{
     flex: 1;
     height: 90%;
-    background-color:#F09367;
+    background-color:var(--first-panel-color);
     border-radius: 12px;
     text-align: justify;
     padding: 10%;
+    color: var(--text);
 }
 .about-author{
-    background: #fcd38c;
+    background: var(--second-panel-color);
     padding: 10px;
     border-radius: 12px;
     margin: 50px;
