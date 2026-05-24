@@ -5,6 +5,8 @@ import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
 import { MemoryRouter } from "react-router-dom";
 import { PaginationContext } from "../../context/PaginationContext";
+import { Provider } from 'react-redux';
+import { store } from '../../store/store';
 
 describe('Card/Item Component Tests', () => {
   afterEach(() => {
@@ -13,6 +15,7 @@ describe('Card/Item Component Tests', () => {
   describe('Rendering Tests', () => {
     test('Displays item name and description correctly', () => {
 render(
+  <Provider store={store}>
   <MemoryRouter>
     <PaginationContext.Provider
       value={{
@@ -30,6 +33,7 @@ render(
             ]} />
     </PaginationContext.Provider>
   </MemoryRouter>
+  </Provider>
 );
         expect(screen.getByText('Pikachu')).toBeInTheDocument();
 
@@ -39,6 +43,7 @@ render(
         }); 
         test('Handles missing props gracefully', () => {
 render(
+<Provider store={store}>
   <MemoryRouter>
     <PaginationContext.Provider
       value={{
@@ -51,6 +56,8 @@ render(
       <ResultTable results={[]} />
     </PaginationContext.Provider>
   </MemoryRouter>
+  </Provider>
+
 );
             expect(screen.queryByText('Pikachu'))
                 .not.toBeInTheDocument();

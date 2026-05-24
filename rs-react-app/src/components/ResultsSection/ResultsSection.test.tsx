@@ -9,6 +9,8 @@ import  { type Item } from "../../App";
 import { getErrorMessage } from '../../App';
 import { PaginationContext } from "../../context/PaginationContext";
 import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 afterEach(() => {
   cleanup();
 });
@@ -24,6 +26,7 @@ describe('Results/CardList Component Tests', () => {
         ];  
 
        render(
+  <Provider store={store}>
   <MemoryRouter>
     <PaginationContext.Provider
       value={{
@@ -36,6 +39,7 @@ describe('Results/CardList Component Tests', () => {
       <ResultTable results={items} />
     </PaginationContext.Provider>
   </MemoryRouter>
+  </Provider>
 );
 
         expect(screen.getByText('Pikachu')).toBeInTheDocument();
@@ -85,6 +89,7 @@ describe('Results/CardList Component Tests', () => {
             { id: 3, name: 'Charmander', description: 'Abilities: blaze, solar-power' },
         ];
 render(
+  <Provider store={store}>
   <MemoryRouter>
     <PaginationContext.Provider
       value={{
@@ -97,6 +102,7 @@ render(
       <ResultTable results={items} />
     </PaginationContext.Provider>
   </MemoryRouter>
+  </Provider>
 );
 
         expect(screen.getByText('Pikachu')).toBeInTheDocument();
@@ -112,6 +118,8 @@ render(
 
 test('Handles empty data gracefully', () => {
 render(
+    <Provider store={store}>
+
   <PaginationContext.Provider
     value={{
       page: 1,
@@ -122,6 +130,7 @@ render(
   >
     <ResultTable results={[]} />
   </PaginationContext.Provider>
+  </Provider>
 );
   expect(screen.getByText('Name')).toBeInTheDocument();
   expect(screen.getByText('Description')).toBeInTheDocument();

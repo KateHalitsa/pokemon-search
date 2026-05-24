@@ -2,6 +2,13 @@ import './ResultsTable.css';
 import type { Item } from "../../App";
 import { Link } from "react-router-dom";
 import { usePagination } from "../../context/PaginationContext";
+import { toggleSelectedItem } from '../../store/pokemonSlice';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../store/store';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../store/hooks';
 
 export type PropsTable = {
   results: Item[];
@@ -9,8 +16,13 @@ export type PropsTable = {
 };
 function ResultTable (props:PropsTable){
 
-    const items = props.results;
-   const { page } = usePagination();
+  const items = props.results;
+  const { page } = usePagination();
+  const dispatch  = useAppDispatch();
+  const selectedItems = useAppSelector(
+      (state) =>
+        state.pokemon.selectedItems
+    );
     return (
          <div className="results-table">
         <div className="table-header">
@@ -18,8 +30,22 @@ function ResultTable (props:PropsTable){
           <div>Description</div>
         </div>
         {items.map((item)=>(
-        <div className="table-row" key={item.name}>
+        <div  className={`table-row ${
+          selectedItems.includes(item.name)
+            ? 'selected'
+            : ''
+        }`} key={item.name}>
             <div>
+              <input
+              type="checkbox"
+              checked={selectedItems.includes(item.name)}
+              onChange={() =>
+                dispatch(
+                  toggleSelectedItem(item.name)
+                )
+              }
+              onClick={(e) => e.stopPropagation()}
+            />
             <Link
               to={`pokemon/${item.name}?page=${page}`}
             >
@@ -34,3 +60,4 @@ function ResultTable (props:PropsTable){
 } 
 
 export default ResultTable;
+

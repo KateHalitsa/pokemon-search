@@ -9,6 +9,7 @@ type State = {
   errorMessage: string;
   totalCount: number;
   lastSearch: string;
+  selectedItems: string[],
 };
 
 const initialState: State = {
@@ -18,6 +19,7 @@ const initialState: State = {
     totalCount: 0,
     lastSearch: '',
     crash: false,
+    selectedItems: [],
 };
 
 const pokemonSlice = createSlice({
@@ -68,7 +70,29 @@ const pokemonSlice = createSlice({
       state.lastSearch =
         action.payload;
     },
+    toggleSelectedItem: (
+    state: { selectedItems: string[]; },
+    action: PayloadAction<string>
+    ) => {
+    const exists =
+        state.selectedItems.includes(
+        action.payload
+        );
+
+    if (exists) {
+        state.selectedItems =
+        state.selectedItems.filter(
+            (item: string) =>
+            item !== action.payload
+        );
+    } else {
+        state.selectedItems.push(
+        action.payload
+        );
+    }
+    },
   },
+  
 });
 
 export const {
@@ -78,6 +102,7 @@ export const {
   setErrorMessage,
   setTotalCount,
   setLastSearch,
+  toggleSelectedItem,
 } = pokemonSlice.actions;
 
 export default pokemonSlice.reducer;
