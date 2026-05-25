@@ -8,7 +8,7 @@ function  Navbar() {
     <nav className="navbar">
       <NavLink to="/search">Search</NavLink>
       <NavLink to="/about">About</NavLink>
-      <button onClick={toggleTheme}>
+      <button className="theme-btn" onClick={toggleTheme}>
         {theme}
       </button>
     </nav>

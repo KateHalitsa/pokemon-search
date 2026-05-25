@@ -10,6 +10,7 @@ import { Outlet, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store/store';
 import { setCrash, setErrorMessage, setLoading, setResults, setTotalCount } from './store/pokemonSlice';
+import SelectedItemsFlyout from './components/SelectedItemsFlyout/SelectedItemsFlyout';
 
 export type Pokemon = {
   name: string;
@@ -212,6 +213,7 @@ useEffect(() => {
     }
     return (
         <div className="layout">
+          <SelectedItemsFlyout />
           <div className="left-panel">
             <SearchSection onSearch={handleSearch} />
             <PaginationContext.Provider

@@ -68,7 +68,7 @@
   --nav-disable:#71557A;
 
 }
-.error-btn, .pad-btn {
+.error-btn, .pad-btn, .unselect-btn, .download-btn,.theme-btn {
     background-color: var(--pad-color);
 }
 #root {

@@ -17,3 +17,9 @@
 .navbar a.active {
   color:var(--nav-active);
 }
+.theme-btn{
+  height: 40px;
+  margin: -10px;
+  color: var(--text);
+  border-radius: 20px;
+}

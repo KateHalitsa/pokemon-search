@@ -8,7 +8,7 @@
 .search-btn,.error-btn{
      width: 20%;
 }
-.search-input,.search-btn,.error-btn,.pad-btn{
+.search-input,.search-btn,.error-btn,.pad-btn, .unselect-btn, .download-btn,.theme-btn{
   height: 52px;
   border: none;
   border-radius: 12px;

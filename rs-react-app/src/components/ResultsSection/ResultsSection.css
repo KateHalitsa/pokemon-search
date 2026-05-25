@@ -5,6 +5,7 @@
     justify-content: start;
     display: flex;
     flex-direction: column;
+    margin-bottom: 62px;
 }
 .loader {
   width: 60px;

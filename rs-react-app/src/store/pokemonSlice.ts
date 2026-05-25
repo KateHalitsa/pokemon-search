@@ -9,7 +9,7 @@ type State = {
   errorMessage: string;
   totalCount: number;
   lastSearch: string;
-  selectedItems: string[],
+  selectedItems: Item[];
 };
 
 const initialState: State = {
@@ -71,27 +71,28 @@ const pokemonSlice = createSlice({
         action.payload;
     },
     toggleSelectedItem: (
-    state: { selectedItems: string[]; },
-    action: PayloadAction<string>
-    ) => {
-    const exists =
-        state.selectedItems.includes(
-        action.payload
-        );
+  state,
+  action: PayloadAction<Item>
+) => {
+  const exists = state.selectedItems.find(
+    (item) => item.name === action.payload.name
+  );
 
-    if (exists) {
-        state.selectedItems =
-        state.selectedItems.filter(
-            (item: string) =>
-            item !== action.payload
-        );
-    } else {
-        state.selectedItems.push(
-        action.payload
-        );
-    }
+  if (exists) {
+    state.selectedItems =
+      state.selectedItems.filter(
+        (item) =>
+          item.name !== action.payload.name
+      );
+  } else {
+    state.selectedItems.push(action.payload);
+  }
+}, 
+    clearSelectedItems: (state) => {
+    state.selectedItems = [];
     },
   },
+
   
 });
 
@@ -103,6 +104,7 @@ export const {
   setTotalCount,
   setLastSearch,
   toggleSelectedItem,
+  clearSelectedItems,
 } = pokemonSlice.actions;
 
 export default pokemonSlice.reducer;

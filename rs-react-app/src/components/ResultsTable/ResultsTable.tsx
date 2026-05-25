@@ -31,17 +31,17 @@ function ResultTable (props:PropsTable){
         </div>
         {items.map((item)=>(
         <div  className={`table-row ${
-          selectedItems.includes(item.name)
+          selectedItems.includes(item)
             ? 'selected'
             : ''
         }`} key={item.name}>
             <div>
               <input
               type="checkbox"
-              checked={selectedItems.includes(item.name)}
+              checked={selectedItems.includes(item)}
               onChange={() =>
                 dispatch(
-                  toggleSelectedItem(item.name)
+                  toggleSelectedItem(item)
                 )
               }
               onClick={(e) => e.stopPropagation()}
