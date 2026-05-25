@@ -1,0 +1,13 @@
+.error-message{
+    background-color:#F09367;
+    align-items: center;
+    justify-content: start;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+}
+img{
+    border-radius: 10px;
+    margin: 10px;
+    width: 90%;
+}
