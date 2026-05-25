@@ -3,8 +3,7 @@ import type { Item } from "../../App";
 import { Link } from "react-router-dom";
 import { usePagination } from "../../context/PaginationContext";
 import { toggleSelectedItem } from '../../store/pokemonSlice';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../store/store';
+
 import {
   useAppDispatch,
   useAppSelector,

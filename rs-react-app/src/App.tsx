@@ -2,7 +2,7 @@
 import './App.css'
 import SearchSection from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
