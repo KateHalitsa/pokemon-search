@@ -1,11 +1,10 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { vi, describe, test, expect, afterEach, beforeEach, type MockedFunction } from "vitest";
-import App, { type PokemonDetails } from "../../App";
+import App from "../../App";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "../../store/store";
 import { configureStore } from "@reduxjs/toolkit";
 import { pokemonApi } from "./pokemonApi";
 import pokemonReducer from '../../store/pokemonSlice';
