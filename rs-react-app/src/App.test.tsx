@@ -7,6 +7,19 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import { configureStore } from '@reduxjs/toolkit';
+import { pokemonApi } from './components/api/pokemonApi';
+import pokemonReducer from './store/pokemonSlice';
+
+const makeStore = () =>
+  configureStore({
+    reducer: {
+      pokemon: pokemonReducer,
+      [pokemonApi.reducerPath]: pokemonApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(pokemonApi.middleware),
+  });
 
 beforeEach(() => {
   const store: Record<string, string> = {};
@@ -70,6 +83,7 @@ describe('Main App Component Tests',()=>{
             results: [],
             }),
         } as Response);
+            const store = makeStore();
 
             render(  
             <Provider store={store}>
@@ -94,6 +108,7 @@ describe('Main App Component Tests',()=>{
             results: [],
             }),
         });
+            const store = makeStore();
 
             render(
             <Provider store={store}>
@@ -134,6 +149,7 @@ describe('Main App Component Tests',()=>{
                     ],
                 }),
                 });
+            const store = makeStore();
 
             render(<Provider store={store}>
                         <MemoryRouter>
@@ -156,6 +172,7 @@ describe('Main App Component Tests',()=>{
                     status: 404,
                 });
 
+            const store = makeStore();
 
             render( <Provider store={store}>
                         <MemoryRouter>
@@ -174,6 +191,7 @@ describe('Main App Component Tests',()=>{
                     ok: false,
                     status: 500,
                 });
+                const store = makeStore();
 
                 render(
                 <Provider store={store}>
@@ -193,7 +211,8 @@ describe('Main App Component Tests',()=>{
                     ok: false,
                     status: 400,
                 });
-
+            
+            const store = makeStore();
 
             render( <Provider store={store}>
                         <MemoryRouter>
@@ -215,6 +234,8 @@ describe('Main App Component Tests',()=>{
                     .mockResolvedValueOnce({
                     ok: true,
                     json: async () => ({
+                        count: 1,
+
                         results: [
                         {
                             name: 'pikachu',
@@ -236,6 +257,7 @@ describe('Main App Component Tests',()=>{
                         ],
                     }),
                     });
+                const store = makeStore();
 
                 render(
                  <Provider store={store}>
@@ -244,6 +266,9 @@ describe('Main App Component Tests',()=>{
                     </MemoryRouter>
                 </Provider>
                 );
+                await waitFor(() => {
+                expect(fetch).toHaveBeenCalled();
+                });
                 await waitFor(() => {
                     expect(screen.getByText('pikachu')).toBeInTheDocument();
                 });
@@ -267,6 +292,20 @@ describe('Main App Component Tests',()=>{
                             <App />
                         </MemoryRouter>
                     </Provider>);
+
+                const input =
+                screen.getByPlaceholderText('Search...');
+
+                await userEvent.type(
+                input,
+                'pikachu'
+                );
+
+                await userEvent.click(
+                screen.getByRole('button', {
+                    name: /search/i,
+                })
+                );
                 await waitFor(() => {
                     expect(
                     screen.getByText('Nothing found for your search')
@@ -308,3 +347,18 @@ describe('Main App Component Tests',()=>{
 });
     })
 })
+test('uses cached data for the same pokemon', async () => {
+await store.dispatch(
+  pokemonApi.endpoints.getPokemonByName.initiate('pikachu')
+);
+
+await store.dispatch(
+  pokemonApi.endpoints.getPokemonByName.initiate('pikachu')
+);
+
+const state = store.getState().pokemonApi;
+
+expect(
+  state.queries['getPokemonByName("pikachu")']?.status
+).toBe('fulfilled');
+});

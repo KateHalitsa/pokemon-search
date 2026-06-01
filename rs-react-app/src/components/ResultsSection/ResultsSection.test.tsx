@@ -61,6 +61,7 @@ describe('Results/CardList Component Tests', () => {
             <ResultsSection
             results={items}
             loading = {false}
+            fetching={false}
             errorMessage="Nothing found for your search"
             onErrorCheck ={onErrorCheck}
             /></PaginationContext.Provider>
@@ -73,6 +74,7 @@ describe('Results/CardList Component Tests', () => {
     <ResultsSection
       results={[]}
       loading={true}
+      fetching={false}
       errorMessage=""
       onErrorCheck={() => {}}
     />
@@ -152,6 +154,7 @@ render(
           <ResultsSection
             results={[]}
             loading={false}
+            fetching={false}
             errorMessage="Network connection error"
             onErrorCheck={() => {}}
           />
@@ -191,6 +194,7 @@ describe('Loading Component Tests',()=>{
         <ResultsSection
           results={[]}
           loading={true}
+          fetching={false}
           errorMessage=""
           onErrorCheck={vi.fn()}
         />
@@ -204,6 +208,7 @@ describe('Loading Component Tests',()=>{
         <ResultsSection
           results={[]}
           loading={true}
+          fetching={false}
           errorMessage=""
           onErrorCheck={vi.fn()}
         />
@@ -217,6 +222,7 @@ describe('Loading Component Tests',()=>{
         <ResultsSection
           results={[]}
           loading={false}
+          fetching={false}
           errorMessage=""
           onErrorCheck={vi.fn()}
         />
@@ -232,6 +238,7 @@ describe('Loading Component Tests',()=>{
         <ResultsSection
           results={[]}
           loading={true}
+          fetching={false}
           errorMessage=""
           onErrorCheck={vi.fn()}
         />
