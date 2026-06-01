@@ -1,0 +1,25 @@
+@import url('../../index.css');
+
+.navbar {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: var(--first-panel-color);
+  border-radius: 16px;
+}
+
+.navbar a {
+  text-decoration: none;
+  font-weight: bold;
+  color:var(--nav-disable);
+}
+
+.navbar a.active {
+  color:var(--nav-active);
+}
+.theme-btn{
+  height: 40px;
+  margin: -10px;
+  color: var(--text);
+  border-radius: 20px;
+}
