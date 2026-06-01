@@ -7,19 +7,20 @@ import Pagination from '../Pagination/Pagination';
 export type Props = {
   results: Item[];
   loading: boolean;
+  fetching: boolean;
   errorMessage: string;
   onErrorCheck: () => void;
 };
 
 function ResultsSection (props:Props) {
   
-    const {results,loading,errorMessage} = props;
+    const {results,loading,fetching,errorMessage} = props;
 
     return (
       <section className="results-section">
         <h2>Results</h2>
         {
-        loading ? (
+        loading||fetching ? (
           <div className="loader" data-testid="loader" aria-label="Loading"> 
           </div>
         ) : (results.length === 0 ? (

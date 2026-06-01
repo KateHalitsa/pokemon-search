@@ -57,10 +57,12 @@ export const pokemonApi = createApi({
                   };
               }
             },
-           providesTags: (result, error, name) => [
+           providesTags: (_result, _error, name) => [
             { type: 'Pokemon', id: name },
-          ],  
-    }),
+          ],
+          
+    
+        }),
       getPokemonList: builder.query<
       { items: Item[]; count: number },
       number>({
@@ -123,13 +125,23 @@ export const pokemonApi = createApi({
         }
       },
 
-      providesTags: (result, error, page) => [
+      providesTags: (_result, _error, page) => [
         { type: 'PokemonList', id: page },
       ],
     }),
+    refreshPokemon: builder.mutation({
+      queryFn: () => ({ data: null }),
+
+      invalidatesTags: [
+        'Pokemon',
+        'PokemonList',
+      ],
+    }),
+    
   })
 })
 export const {
 useGetPokemonByNameQuery,
-useGetPokemonListQuery
+useGetPokemonListQuery,
+useRefreshPokemonMutation
 } = pokemonApi;
