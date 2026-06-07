@@ -3,6 +3,7 @@ import FormFields from "../components/FormFields/FormFields";
 import { useDispatch } from "react-redux";
 import { addSubmission } from "../store/formSlice";
 import { convertToBase64 } from "../utils/convertToBase64";
+import { getPasswordStrength } from "../utils/getPasswordStrength";
 
 export type FormValues = {
   name: string;
@@ -11,11 +12,16 @@ export type FormValues = {
   gender: string;
   terms: boolean;
   image?: FileList;
+  password: string;
+  confirmPassword: string;
 };
 
 function HookForm() {
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit,watch } = useForm<FormValues>();
   const dispatch = useDispatch();
+const password = watch("password")||'';
+
+const strength = getPasswordStrength(password);
 
  const onSubmit = async (data: FormValues) => {
 const file = data.image?.[0];
@@ -34,9 +40,11 @@ const file = data.image?.[0];
 }
 
   return (
+    
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FormFields register={register} />
-
+      <FormFields register={register} password={password}strength={strength}
+ />
+      
       <button type="submit">
         Submit
       </button>

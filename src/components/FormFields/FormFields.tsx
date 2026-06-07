@@ -1,9 +1,15 @@
-import type { UseFormRegister } from "react-hook-form";
+import {type UseFormRegister } from "react-hook-form";
 import type { FormValues } from "../../HookForm/HookForm";
+import { getPasswordStrength } from "../../utils/getPasswordStrength";
 
-interface Props {
+type Props ={
   register?: UseFormRegister<FormValues>;
-}function FormFields({ register }: Props){
+  password?: string;
+  setPassword?: React.Dispatch<React.SetStateAction<string>>;
+  strength?: ReturnType<typeof getPasswordStrength>;}
+
+function FormFields({ register,password, setPassword,strength}: Props){
+
     return(
         <>
         <label htmlFor="name">Name</label>
@@ -33,6 +39,41 @@ interface Props {
         <input id="terms" type="checkbox" name="terms" {...(register ? register("terms") : {})}/>
         Accept Terms & Conditions
         </label>
+        <label htmlFor="password">Password</label>
+        <input
+        id="password"
+        name="password"
+        type="password"
+        {...(register ? register("password") : {})}
+        onInput={(e) => {
+          if (!register) setPassword?.((e.target as HTMLInputElement).value);
+        }}
+      />
+<div>
+  <p>Password strength: {strength?.score}/4</p>
+
+  <ul>
+    <li style={{ color: strength?.hasNumber ? "green" : "red" }}>
+      1 number
+    </li>
+    <li style={{ color: strength?.hasUpper ? "green" : "red" }}>
+      1 uppercase
+    </li>
+    <li style={{ color: strength?.hasLower ? "green" : "red" }}>
+      1 lowercase
+    </li>
+    <li style={{ color: strength?.hasSpecial ? "green" : "red" }}>
+      1 special character
+    </li>
+  </ul>
+</div>
+
+
+        <label htmlFor="confirmPassword">Confirm Password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" {...(register ? register("confirmPassword",{validate: value =>
+      value === password || "Passwords do not match"}) : {})}
+      
+ />
 </>
     )
 }

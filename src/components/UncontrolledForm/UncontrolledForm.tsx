@@ -1,20 +1,21 @@
 import { useDispatch } from "react-redux";
 import { addSubmission } from "../../store/formSlice";
 import FormFields from "../FormFields/FormFields";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { convertToBase64 } from "../../utils/convertToBase64";
+import { getPasswordStrength } from "../../utils/getPasswordStrength";
 
 function UncontrolledForm() {
-  console.log("RENDER UncontrolledForm");
+    const [password, setPassword] = useState("");
    const dispatch = useDispatch();
 const isSubmitting = useRef(false);
+const strength = getPasswordStrength(password || "");
 
   const handleSubmit =async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (isSubmitting.current) return;
   isSubmitting.current = true;
-      console.log("HANDLE SUBMIT");
 
     const form = e.currentTarget;
 
@@ -47,19 +48,26 @@ const isSubmitting = useRef(false);
     }
      image = await convertToBase64(file);
     }
+    setPassword((form.elements.namedItem("password") as HTMLInputElement).value);
+const passwordValue = (form.elements.namedItem("password") as HTMLInputElement).value;
+const confirmPasswordValue = (form.elements.namedItem("confirmPassword") as HTMLInputElement).value;
+
+if (passwordValue !== confirmPasswordValue) {
+  alert("Passwords do not match");
+  return;
+}
     console.log(data);
     const fullData = {
  ...data,
   image
 };   
-console.log("BEFORE DISPATCH");
 
     dispatch(addSubmission(fullData));
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormFields />
+      <FormFields password={password} setPassword={setPassword} strength={strength}/>
       <button type="submit">Submit</button>
     </form>
   );
