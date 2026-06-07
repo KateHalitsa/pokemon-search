@@ -10,10 +10,12 @@ export type FormValues = {
   age: number;
   email: string;
   gender: string;
+  country: string;
   terms: boolean;
   image?: FileList;
   password: string;
   confirmPassword: string;
+  
 };
 
 function HookForm() {

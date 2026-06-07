@@ -19,6 +19,8 @@ function SubmissionCard({ data }: Props) {
       <p>Age: {data.age}</p>
       <p>Email: {data.email}</p>
       <p>Gender: {data.gender}</p>
+      <p>Country: {data.country}</p>
+
     </div>
   );
 }

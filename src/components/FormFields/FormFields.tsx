@@ -1,6 +1,8 @@
 import {type UseFormRegister } from "react-hook-form";
 import type { FormValues } from "../../HookForm/HookForm";
 import { getPasswordStrength } from "../../utils/getPasswordStrength";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 type Props ={
   register?: UseFormRegister<FormValues>;
@@ -9,7 +11,9 @@ type Props ={
   strength?: ReturnType<typeof getPasswordStrength>;}
 
 function FormFields({ register,password, setPassword,strength}: Props){
-
+const countries = useSelector(
+  (state: RootState) => state.countries
+);
     return(
         <>
         <label htmlFor="name">Name</label>
@@ -34,6 +38,24 @@ function FormFields({ register,password, setPassword,strength}: Props){
         accept=".png,.jpg,.jpeg"
         {...(register ? register("image") : {})}
         />
+        
+        <label htmlFor="country">Country</label>
+
+<input
+  id="country"
+  name="country"
+  list="countries"
+  {...(register ? register("country") : {})}
+/>
+
+<datalist id="countries">
+  {countries.map(country => (
+    <option
+      key={country}
+      value={country}
+    />
+  ))}
+</datalist>
 
         <label htmlFor="terms">
         <input id="terms" type="checkbox" name="terms" {...(register ? register("terms") : {})}/>

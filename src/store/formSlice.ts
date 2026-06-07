@@ -7,6 +7,7 @@ export interface Submission {
   age: number;
   email: string;
   gender: string;
+  country: string;
   terms: boolean;
   formType: "uncontrolled" | "react-hook-form";
   image?: string;

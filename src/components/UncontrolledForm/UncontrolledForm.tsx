@@ -27,6 +27,7 @@ const strength = getPasswordStrength(password || "");
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       gender: (form.elements.namedItem("gender") as HTMLSelectElement).value,
       terms: (form.elements.namedItem("terms") as HTMLInputElement).checked,
+      country: (form.elements.namedItem("country") as HTMLSelectElement).value,
     };
 
   const file = (form.elements.namedItem("image") as HTMLInputElement)
