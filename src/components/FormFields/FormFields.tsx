@@ -20,6 +20,14 @@ interface Props {
             <option value="male">Male</option>
             <option value="female">Female</option>      
         </select>
+        <label htmlFor="image">Photo</label>
+        <input
+        id="image"
+        name="image"
+        type="file"
+        accept=".png,.jpg,.jpeg"
+        {...(register ? register("image") : {})}
+        />
 
         <label htmlFor="terms">
         <input id="terms" type="checkbox" name="terms" {...(register ? register("terms") : {})}/>

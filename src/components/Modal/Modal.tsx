@@ -6,6 +6,7 @@ interface Props {
   isOpen: boolean;
   handleClose: () => void;
 }
+
 function Modal({ children, isOpen, handleClose }: Props) {
      const modalRef = useRef<HTMLDivElement>(null);
     const previousActiveElement = useRef<HTMLElement | null>(null);

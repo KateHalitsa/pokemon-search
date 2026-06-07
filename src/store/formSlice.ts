@@ -9,6 +9,7 @@ export interface Submission {
   gender: string;
   terms: boolean;
   formType: "uncontrolled" | "react-hook-form";
+  image?: string;
 }
 
 export interface SubmissionState {
@@ -21,6 +22,8 @@ const submissionsSlice = createSlice({
   initialState,
   reducers: {
     addSubmission: (state, action: PayloadAction<Submission>) => {
+        console.log("REDUCER");
+
       state.push(action.payload);
     },
   },

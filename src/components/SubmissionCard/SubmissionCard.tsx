@@ -13,6 +13,9 @@ function SubmissionCard({ data }: Props) {
       </h3>
 
       <p>Name: {data.name}</p>
+      {data.image && (
+        <img src={data.image} alt={data.name} width={150} />
+      )}      
       <p>Age: {data.age}</p>
       <p>Email: {data.email}</p>
       <p>Gender: {data.gender}</p>
