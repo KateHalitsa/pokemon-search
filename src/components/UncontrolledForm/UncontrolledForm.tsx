@@ -4,9 +4,12 @@ import FormFields from "../FormFields/FormFields";
 import { useRef, useState } from "react";
 import { convertToBase64 } from "../../utils/convertToBase64";
 import { getPasswordStrength } from "../../utils/getPasswordStrength";
+import { schema } from "../../utils/validationSchema";
+import * as yup from "yup";
 
 function UncontrolledForm() {
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
    const dispatch = useDispatch();
 const isSubmitting = useRef(false);
 const strength = getPasswordStrength(password || "");
@@ -60,15 +63,32 @@ if (passwordValue !== confirmPasswordValue) {
     console.log(data);
     const fullData = {
  ...data,
+   password: passwordValue,
+  confirmPassword: confirmPasswordValue,
+
   image
 };   
+    try {
+    await schema.validate(fullData, { abortEarly: false });
+    dispatch(addSubmission(fullData));}
+    catch(err){
+       if (err instanceof yup.ValidationError) {
+    const newErrors: Record<string, string> = {};
 
-    dispatch(addSubmission(fullData));
+    err.inner.forEach((error) => {
+      if (error.path) {
+        newErrors[error.path] = error.message;
+      }
+    });
+
+    setErrors(newErrors);
+  }
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormFields password={password} setPassword={setPassword} strength={strength}/>
+      <FormFields password={password}  uncontrolledErrors={errors} setPassword={setPassword} strength={strength}/>
       <button type="submit">Submit</button>
     </form>
   );

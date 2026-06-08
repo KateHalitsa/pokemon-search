@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import { addSubmission } from "../store/formSlice";
 import { convertToBase64 } from "../utils/convertToBase64";
 import { getPasswordStrength } from "../utils/getPasswordStrength";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../utils/validationSchema";
+import { useRef } from "react";
 
 export type FormValues = {
   name: string;
@@ -19,13 +22,26 @@ export type FormValues = {
 };
 
 function HookForm() {
-  const { register, handleSubmit,watch } = useForm<FormValues>();
+  const {
+  register,
+  handleSubmit,
+  watch,
+  formState: { errors,isValid }
+} = useForm<FormValues>({
+  resolver: yupResolver(schema),
+  mode: "onChange"
+
+});
+const isSubmitting = useRef(false);
+
   const dispatch = useDispatch();
 const password = watch("password")||'';
 
 const strength = getPasswordStrength(password);
 
- const onSubmit = async (data: FormValues) => {
+ const onSubmit = async (data: FormValues) => { if (isSubmitting.current) return;
+
+
 const file = data.image?.[0];
 
   const base64 = file
@@ -39,15 +55,16 @@ const file = data.image?.[0];
     image: base64,
   };
     dispatch(addSubmission(submission));
+    isSubmitting.current = true;
 }
 
   return (
     
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FormFields register={register} password={password}strength={strength}
+      <FormFields register={register}  rhfErrors={errors}  password={password}strength={strength}
  />
       
-      <button type="submit">
+      <button type="submit"disabled={!isValid}>
         Submit
       </button>
     </form>
