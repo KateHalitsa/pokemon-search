@@ -11,6 +11,7 @@ export interface Submission {
   terms: boolean;
   formType: "uncontrolled" | "react-hook-form";
   image?: string;
+  isNew?: boolean;
 }
 
 export interface SubmissionState {
@@ -24,11 +25,17 @@ const submissionsSlice = createSlice({
   reducers: {
     addSubmission: (state, action: PayloadAction<Submission>) => {
         console.log("REDUCER");
-
-      state.push(action.payload);
+        state.unshift(action.payload);
     },
-  },
+    removeHighlight: (state, action: PayloadAction<string>) => {
+      const item = state.find(s => s.id === action.payload);
+
+      if (item) {
+        item.isNew = false;
+      }
+    }
+  }
 });
 
-export const { addSubmission } = submissionsSlice.actions;
+export const { addSubmission, removeHighlight} = submissionsSlice.actions;
 export default submissionsSlice.reducer;

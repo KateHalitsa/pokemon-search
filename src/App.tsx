@@ -24,8 +24,8 @@ function App() {
 
         <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen}>
     {formType === "uncontrolled"
-      ? <UncontrolledForm />
-      : <HookForm />}
+      ? <UncontrolledForm onSuccess={() => setIsOpen(false)}  />
+      : <HookForm onSuccess={() => setIsOpen(false)} />}
   
         </Modal>
         <Submissions/>

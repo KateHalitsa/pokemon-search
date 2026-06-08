@@ -1,12 +1,25 @@
-import type { Submission } from "../../store/formSlice";
+import { useEffect } from "react";
+import { removeHighlight, type Submission } from "../../store/formSlice";
+import { useDispatch } from "react-redux";
 
 type Props = {
   data: Submission;
 };
 function SubmissionCard({ data }: Props) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!data.isNew) return;
+
+    const timer = setTimeout(() => {
+      dispatch(removeHighlight(data.id));
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [data.isNew]);
   return (
-    <div className="card">
-      <h3>
+    <div className={`card ${data.isNew ? "new-card" : ""}`}>      
+    <h3>
         {data.formType === "uncontrolled"
           ? "Uncontrolled Form"
           : "React Hook Form"}

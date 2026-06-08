@@ -187,3 +187,13 @@
   color: red;
   font-size: 14px;
 }
+.card {
+  border: 1px solid gray;
+  padding: 20px;
+}
+
+.new-card {
+  background-color: #dff6dd;
+  border: 3px solid green;
+  transition: 1s;
+}

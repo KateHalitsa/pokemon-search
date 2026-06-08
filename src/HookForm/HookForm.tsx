@@ -20,12 +20,15 @@ export type FormValues = {
   confirmPassword: string;
   
 };
-
-function HookForm() {
+interface Props {
+  onSuccess: () => void;
+}
+function HookForm({ onSuccess }: Props) {
   const {
   register,
   handleSubmit,
   watch,
+  reset,
   formState: { errors,isValid }
 } = useForm<FormValues>({
   resolver: yupResolver(schema),
@@ -53,9 +56,12 @@ const file = data.image?.[0];
     formType: "react-hook-form" as const,
     ...data,
     image: base64,
+    isNew: true
   };
     dispatch(addSubmission(submission));
     isSubmitting.current = true;
+    reset();
+    onSuccess();
 }
 
   return (

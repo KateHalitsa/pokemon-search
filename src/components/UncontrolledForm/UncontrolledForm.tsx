@@ -6,8 +6,10 @@ import { convertToBase64 } from "../../utils/convertToBase64";
 import { getPasswordStrength } from "../../utils/getPasswordStrength";
 import { schema } from "../../utils/validationSchema";
 import * as yup from "yup";
-
-function UncontrolledForm() {
+interface Props {
+  onSuccess: () => void;
+}
+function UncontrolledForm({ onSuccess }: Props) {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
    const dispatch = useDispatch();
@@ -65,12 +67,15 @@ if (passwordValue !== confirmPasswordValue) {
  ...data,
    password: passwordValue,
   confirmPassword: confirmPasswordValue,
-
-  image
+  image,
+  isNew: true,
 };   
     try {
     await schema.validate(fullData, { abortEarly: false });
-    dispatch(addSubmission(fullData));}
+    dispatch(addSubmission(fullData));
+    form.reset();
+    onSuccess();
+  }   
     catch(err){
        if (err instanceof yup.ValidationError) {
     const newErrors: Record<string, string> = {};
@@ -84,6 +89,7 @@ if (passwordValue !== confirmPasswordValue) {
     setErrors(newErrors);
   }
     }
+
   };
 
   return (
