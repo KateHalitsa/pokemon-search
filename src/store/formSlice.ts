@@ -18,7 +18,7 @@ export interface SubmissionState {
   submissions: Submission[];
 }
 
-const initialState: Submission[] = [];
+export const initialState: Submission[] = [];
 const submissionsSlice = createSlice({
   name: "submissions",
   initialState,

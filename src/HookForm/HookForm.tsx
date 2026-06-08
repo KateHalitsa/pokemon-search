@@ -43,6 +43,7 @@ const password = watch("password")||'';
 const strength = getPasswordStrength(password);
 
  const onSubmit = async (data: FormValues) => { if (isSubmitting.current) return;
+    isSubmitting.current = true;
 
 
 const file = data.image?.[0];
@@ -59,7 +60,7 @@ const file = data.image?.[0];
     isNew: true
   };
     dispatch(addSubmission(submission));
-    isSubmitting.current = true;
+    //isSubmitting.current = true;
     reset();
     onSuccess();
 }
@@ -67,6 +68,8 @@ const file = data.image?.[0];
   return (
     
     <form onSubmit={handleSubmit(onSubmit)}>
+            <h2>Hook Form</h2>
+
       <FormFields register={register}  rhfErrors={errors}  password={password}strength={strength}
  />
       

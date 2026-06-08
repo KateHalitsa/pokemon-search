@@ -94,6 +94,7 @@ if (passwordValue !== confirmPasswordValue) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>Uncontrolled Form</h2>
       <FormFields password={password}  uncontrolledErrors={errors} setPassword={setPassword} strength={strength}/>
       <button type="submit">Submit</button>
     </form>
