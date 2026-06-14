@@ -3,6 +3,7 @@ import { CountryCard } from '../country-card/country-card';
 import { getPopulationForYear, createYearDataMap } from '../../utils/data-transformers';
 
 import styles from './country-list.module.css';
+import { useMemo } from 'react';
 
 type CountryListProps = {
   countries: Country[];
@@ -24,7 +25,8 @@ export const CountryList = ({
   sortField,
   sortOrder,
 }: CountryListProps) => {
-  const filteredCountries = countries
+  const filteredCountries = useMemo(() => {
+  return countries
     .filter((c) => {
       const matchesSearch = c.id.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesRegion = !selectedRegion || c.data.some((d) => d.region === selectedRegion);
@@ -39,12 +41,13 @@ export const CountryList = ({
         return sortOrder === 'asc' ? popA - popB : popB - popA;
       }
     });
+  },[searchQuery,selectedYear,sortOrder])
 
   return (
     <div className={styles.countryList}>
-      {filteredCountries.map((country, index) => (
+      {filteredCountries.map((country) => (
         <CountryCard
-          key={index}
+          key={country.id}
           country={country}
           selectedYear={selectedYear}
           selectedColumns={selectedColumns}
