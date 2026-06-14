@@ -31,6 +31,8 @@ const testStore = configureStore({
           description: 'Abilities: static',
         },
       ],
+        currentPage: 1,
+
     },
   },
 });

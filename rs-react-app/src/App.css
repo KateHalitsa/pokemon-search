@@ -1,4 +1,4 @@
-.search-btn,.error-btn,.pad-btn{
+.search-btn,.error-btn,.pad-btn,.refresh-btn{
      padding: 0 28px;
     color: white;
     font-weight: 600;
@@ -8,7 +8,7 @@
 .search-btn,.error-btn{
      width: 20%;
 }
-.search-input,.search-btn,.error-btn,.pad-btn, .unselect-btn, .download-btn,.theme-btn{
+.search-input,.search-btn,.error-btn,.pad-btn, .unselect-btn, .download-btn,.theme-btn,.refresh-btn{
   height: 52px;
   border: none;
   border-radius: 12px;

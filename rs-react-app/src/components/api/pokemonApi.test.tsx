@@ -1,20 +1,27 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { vi, describe, test, expect, afterEach, beforeEach } from "vitest";
-import App, { type PokemonDetails } from "../../App";
-import { fetchPokemon } from "../../components/api/pokemonApi";
+import { vi, describe, test, expect, afterEach, beforeEach, type MockedFunction } from "vitest";
+import App from "../../App";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "../../store/store";
+import { configureStore } from "@reduxjs/toolkit";
+import { pokemonApi } from "./pokemonApi";
+import pokemonReducer from '../../store/pokemonSlice';
 
-vi.mock("../../components/api/pokemonApi", () => ({
-  fetchPokemon: vi.fn(),
-}));
 
-const mockedFetchPokemon = vi.mocked(fetchPokemon);
-
+const makeStore = () =>
+  configureStore({
+    reducer: {
+      pokemon: pokemonReducer,
+      [pokemonApi.reducerPath]: pokemonApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(pokemonApi.middleware),
+  });
 beforeEach(() => {
+  globalThis.fetch = vi.fn();
+
   const store: Record<string, string> = {};
 
   vi.stubGlobal("localStorage", {
@@ -38,43 +45,57 @@ afterEach(() => {
 
 describe("API mock test", () => {
   test("renders pokemon data", async () => {
-    const user = userEvent.setup();
-    const mockedFetchPokemon = vi.mocked(fetchPokemon);
+     const user = userEvent.setup();
+     const mockedFetch = fetch as MockedFunction<typeof fetch>;
 
-    mockedFetchPokemon.mockResolvedValue({
-      ok: true,
-      json: async (): Promise<PokemonDetails> => ({
-        name: "pikachu",
-        abilities: [{ ability: { name: "static" } }],
-      }),
-    } as Response);
+  mockedFetch
+  .mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({
+      count: 1,
+      results: [],
+    }),
+  }as Response)
+  .mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({
+      name: "pikachu",
+      abilities: [
+        {
+          ability: {
+            name: "static",
+          },
+        },
+      ],
+    }),
+  }as Response);
+  render(
+    <Provider store={makeStore()}>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </Provider>
+  );
 
-    
-    render(
-          <Provider store={store}>
-            <MemoryRouter>
-                <App />
-            </MemoryRouter>
-          </Provider>
-    );
+  const input = screen.getByPlaceholderText("Search...");
+  const button = screen.getByText("Search");
 
-    const input = screen.getByPlaceholderText("Search...");
-    const button = screen.getByText("Search");
+  await user.type(input, "pikachu");
+  await user.click(button);
 
-    await user.type(input, "pikachu");
-    await user.click(button);
-
-    expect(await screen.findByText("pikachu")).toBeInTheDocument();
-    expect(await screen.findByText(/static/i)).toBeInTheDocument();
+  expect(await screen.findByText("pikachu")).toBeInTheDocument();
+  expect(await screen.findByText(/static/i)).toBeInTheDocument();
   });
 
   test("shows error message when API fails", async () => {
     const user = userEvent.setup();
+     const mockedFetch = fetch as MockedFunction<typeof fetch>;
 
-    mockedFetchPokemon.mockRejectedValue(new Error("Network error"));
+    mockedFetch
+.mockRejectedValue(new Error("Network error"));
 
     render(
-          <Provider store={store}>
+          <Provider store={makeStore()}>
             <MemoryRouter>
                 <App />
             </MemoryRouter>

@@ -10,6 +10,8 @@ type State = {
   totalCount: number;
   lastSearch: string;
   selectedItems: Item[];
+  currentPage: number;
+
 };
 
 const initialState: State = {
@@ -20,6 +22,8 @@ const initialState: State = {
     lastSearch: '',
     crash: false,
     selectedItems: [],
+    currentPage: 1,
+
 };
 
 const pokemonSlice = createSlice({
@@ -62,7 +66,12 @@ const pokemonSlice = createSlice({
       state.totalCount =
         action.payload;
     },
-
+    setCurrentPage: (
+      state,
+      action: PayloadAction<number>
+    ) => {
+      state.currentPage = action.payload;
+    },
     setLastSearch: (
       state,
       action: PayloadAction<string>
@@ -92,7 +101,7 @@ const pokemonSlice = createSlice({
     state.selectedItems = [];
     },
   },
-
+  
   
 });
 
@@ -105,6 +114,7 @@ export const {
   setLastSearch,
   toggleSelectedItem,
   clearSelectedItems,
+  setCurrentPage,
 } = pokemonSlice.actions;
 
 export default pokemonSlice.reducer;

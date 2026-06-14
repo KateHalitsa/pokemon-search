@@ -3,7 +3,6 @@ import './App.css'
 import SearchSection from './components/SearchSection/SearchSection'
 import ResultsSection from './components/ResultsSection/ResultsSection'
 import { useEffect } from 'react';
-import { fetchPokemon } from './components/api/pokemonApi';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
 import { Outlet, useSearchParams } from 'react-router-dom';
@@ -11,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store/store';
 import { setCrash, setErrorMessage, setLoading, setResults, setTotalCount } from './store/pokemonSlice';
 import SelectedItemsFlyout from './components/SelectedItemsFlyout/SelectedItemsFlyout';
+import { useGetPokemonByNameQuery, useGetPokemonListQuery } from './components/api/pokemonApi';
+import RefreshButton from './components/RefreshButton/RefreshButton';
 
 export type Pokemon = {
   name: string;
@@ -47,44 +48,70 @@ export type Item = {
 }
 
 function App() {
-  const dispatch =
-  useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
 
-const {
-  results,
-  loading,
-  errorMessage,
-  crash,
-  totalCount,
-} = useSelector(
-  (state: RootState) =>
-    state.pokemon
-);
+  const {
+    storedValue: lastSearch,
+    setValue: setLastSearch,
+  } = useLocalStorage('');
 
-  const ITEMS_PER_PAGE = 10;
+  const { crash } = useSelector(
+    (state: RootState) => state.pokemon
+  );
 
   const [searchParams, setSearchParams] =
-  useSearchParams();
+    useSearchParams();
 
-const rawPage = Number(
-  searchParams.get('page')
-) || 1;
+  const rawPage =
+    Number(searchParams.get('page')) || 1;
+
+  const page = Math.max(rawPage, 1);
 
 
+  const searchQuery =
+    useGetPokemonByNameQuery(
+      lastSearch.toLowerCase(),
+      {
+        skip: !lastSearch,
+      }
+    );
 
-  const totalPages = Math.ceil(
-  totalCount / ITEMS_PER_PAGE
-);
-const page = Math.min(
-  Math.max(rawPage, 1),
-  totalPages || 1
-);
+  const listQuery =
+    useGetPokemonListQuery(page, {
+      skip: !!lastSearch,
+    });
+
+
+  const queryResult = lastSearch
+    ? searchQuery
+    : listQuery;
+
   const {
-  storedValue: lastSearch,
-  setValue: setLastSearch,
-  } = useLocalStorage(
-    ''
-  );
+    data,
+    isLoading,
+    isFetching,
+    error,
+  } = queryResult;
+
+
+  const items: Item[] = lastSearch
+    ? (data as Item[]) ?? []
+    : (
+        data as {
+          items: Item[];
+          count: number;
+        }
+      )?.items ?? [];
+
+  const totalPages = (lastSearch
+    ? items.length
+    : (
+        data as {
+          items: Item[];
+          count: number;
+        }
+      )?.count ?? 0)/10;
+  
   function causeAnError(){
     dispatch(setCrash(true));
   }
@@ -107,7 +134,6 @@ useEffect(() => {
 
   dispatch(setLoading(true));
 
-  fetchData(lastSearch, page);
 }, [page, lastSearch]);
 useEffect(() => {
     if (
@@ -119,81 +145,7 @@ useEffect(() => {
       });
     }
   }, [rawPage, totalPages]);  
- async function fetchData (search: string,  currentPage: number
-) {
-    let items: Item[];
-    const offset = (currentPage - 1) * 10;
-    try {
 
-      let json;
-      let response;
-      if (search) {
-        response = await fetchPokemon(search.toLowerCase());
-      if (!response.ok) {
-        
-        dispatch(setResults([]));
-        dispatch(setErrorMessage(getErrorMessage(response.status)));
-        dispatch(setLoading(false));
-      return;
-        }
-         const details: PokemonDetails =
-        await response.json();
-        
-      const abilities = details.abilities.map(
-        (a) => a.ability.name
-      );
-
-      items = [
-        {
-          name: details.name,
-          description: 'Abilities: ' + abilities.join(', '),
-        },
-      ];
-      dispatch(setTotalCount(items.length));
-      } else {
-        response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=10`
-        );
-       if (!response.ok) {
-          
-        dispatch(setResults([]));
-        dispatch(setErrorMessage(getErrorMessage(response.status)));
-        dispatch(setLoading(false));
-      return;
-        }
-        json = await response.json();
-        dispatch(setTotalCount(json.count));
-        
-         items = await Promise.all(
-          json.results.map(async (pokemon: Pokemon) => {
-            const detailsResponse = await fetch(
-              pokemon.url
-            );
-
-            const details: PokemonDetails =
-              await detailsResponse.json();
-
-            const abilities = details.abilities.map(
-              (a) => a.ability.name
-            );
-
-            return {
-              name: details.name,
-              description:
-                'Abilities: ' + abilities.join(', '),
-            };
-          })
-      )
-    }
-      dispatch(setResults(items));
-      dispatch(setLoading(false));
-    } catch{
-      dispatch(setResults([]));
-      dispatch(setErrorMessage('Network connection error'));
-      dispatch(setLoading(false));
-    }
-  };
-  
   async function handleSearch(query: string){
     const trimmedValue = query.trim();
    if (trimmedValue === lastSearch) {
@@ -211,6 +163,18 @@ useEffect(() => {
     if (crash) {
     throw new Error('Test application error');
     }
+    let errorMessage = '';
+
+if (error && 'status' in error) {
+  if (typeof error.status === 'number') {
+    errorMessage = getErrorMessage(
+      error.status
+    );
+  } else {
+    errorMessage =
+      'Network connection error';
+  }
+}
     return (
         <div className="layout">
           <SelectedItemsFlyout />
@@ -224,7 +188,9 @@ useEffect(() => {
                 setTotalCount
               }}
             >
-            <ResultsSection results={results} loading={loading} errorMessage={errorMessage} onErrorCheck={causeAnError}/>  
+            <ResultsSection results={items} loading={isLoading} fetching={isFetching} errorMessage={errorMessage} onErrorCheck={causeAnError}/>  
+                   <RefreshButton/>
+
             </PaginationContext.Provider>
           </div>
           <div className="right-panel">
