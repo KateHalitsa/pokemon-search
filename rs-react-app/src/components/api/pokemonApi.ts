@@ -4,8 +4,7 @@ import {
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
 const CACHE_TTL = Number(
-  import.meta.env.VITE_CACHE_TTL ?? 60
-);
+process.env.NEXT_PUBLIC_CACHE_TTL) || 60;
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
 
