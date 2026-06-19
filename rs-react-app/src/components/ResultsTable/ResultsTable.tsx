@@ -1,6 +1,5 @@
 import './ResultsTable.css';
 import type { Item } from "../../App";
-import { Link } from "react-router-dom";
 import { usePagination } from "../../context/PaginationContext";
 import { toggleSelectedItem } from '../../store/pokemonSlice';
 
@@ -8,6 +7,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../store/hooks';
+import Link from 'next/link';
 
 export type PropsTable = {
   results: Item[];
@@ -46,7 +46,7 @@ function ResultTable (props:PropsTable){
               onClick={(e) => e.stopPropagation()}
             />
             <Link
-              to={`pokemon/${item.name}?page=${page}`}
+              href={`pokemon/${item.name}?page=${page}`}
             >
               {item.name}
             </Link>

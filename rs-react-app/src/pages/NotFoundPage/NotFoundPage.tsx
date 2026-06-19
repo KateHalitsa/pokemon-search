@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from 'next/link';
 import './NotFoundPage.css'
 
 export default function NotFoundPage() {
@@ -12,7 +12,7 @@ export default function NotFoundPage() {
         The page you are looking for does not exist.
       </p>
 
-      <Link to="/search">
+      <Link href="/search">
         Go to Search page
       </Link>
     </div>

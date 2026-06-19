@@ -1,5 +1,8 @@
+"use client"; // 1. Обязательно делаем компонент клиентским
+
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+// 2. Меняем импорт роутера на встроенный в Next.js
+import { useRouter, useParams } from 'next/navigation';
 
 type PokemonDetailsType = {
   name: string;
@@ -16,19 +19,17 @@ type PokemonDetailsType = {
 };
 
 function PokemonDetails() {
-  const { name } = useParams();
+  // 3. В Next.js useParams возвращает объект, где параметры всегда строки или массивы строк
+  const params = useParams();
+const name = params?.name 
+  ? params.name 
+  : (Array.isArray(params?.slug) ? params.slug[1] : undefined);
+  // 4. Меняем useNavigate на useRouter
+  const router = useRouter();
 
-  const navigate = useNavigate();
-  
-
-  const [pokemon, setPokemon] =
-    useState<PokemonDetailsType | null>(null);
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState('');
+  const [pokemon, setPokemon] = useState<PokemonDetailsType | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     async function loadPokemon() {
@@ -48,8 +49,6 @@ function PokemonDetails() {
         }
 
         const data = await response.json();
-
-        
         setPokemon(data);
       } catch {
         setError('Network error');
@@ -62,11 +61,7 @@ function PokemonDetails() {
   }, [name]);
 
   if (loading) {
-    return <div
-      className="loader"
-      data-testid='loader'
-      aria-label="Loading details"
-    />;
+    return <div className="loader" data-testid='loader' aria-label="Loading details" />;
   }
 
   if (error) {
@@ -80,7 +75,8 @@ function PokemonDetails() {
   return (
     <div className="pokemon-details">
       <button
-      onClick={() => navigate('/search')}
+        // 5. Заменяем navigate('/search') на router.push(...)
+        onClick={() => router.push('/pokemon-search/search')}
       >
         Close
       </button>

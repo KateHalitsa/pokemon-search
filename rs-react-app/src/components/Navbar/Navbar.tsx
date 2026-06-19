@@ -1,4 +1,6 @@
-import { NavLink } from "react-router-dom";
+"use client";
+
+import Link from 'next/link';
 import "./Navbar.css";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -6,8 +8,8 @@ function  Navbar() {
   const { theme, toggleTheme } =useTheme();
   return (
     <nav className="navbar">
-      <NavLink to="/search">Search</NavLink>
-      <NavLink to="/about">About</NavLink>
+      <Link href="/pokemon-search/search">Search</Link>
+      <Link href="/pokemon-search/about">About</Link>
       <button className="theme-btn" onClick={toggleTheme}>
         {theme}
       </button>

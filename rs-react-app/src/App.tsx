@@ -1,11 +1,11 @@
+"use client"; // 1. ОБЯЗАТЕЛЬНО добавляем эту директиву в самый верх
 
-import './App.css'
-import SearchSection from './components/SearchSection/SearchSection'
-import ResultsSection from './components/ResultsSection/ResultsSection'
+import './App.css';
+import SearchSection from './components/SearchSection/SearchSection';
+import ResultsSection from './components/ResultsSection/ResultsSection';
 import { useEffect } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { PaginationContext } from './context/PaginationContext';
-import { Outlet, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store/store';
 import { setCrash, setErrorMessage, setLoading, setResults, setTotalCount } from './store/pokemonSlice';
@@ -13,196 +13,125 @@ import SelectedItemsFlyout from './components/SelectedItemsFlyout/SelectedItemsF
 import { useGetPokemonByNameQuery, useGetPokemonListQuery } from './components/api/pokemonApi';
 import RefreshButton from './components/RefreshButton/RefreshButton';
 
-export type Pokemon = {
-  name: string;
-  url: string;
-};
-export type PokemonDetails = {
-  name: string;
-  abilities: {
-    ability: {
-      name: string;
-    };
-  }[];
-};
+// 2. Импортируем хуки для работы с URL из Next.js вместо react-router-dom
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-export type Item = {
-  name: string;
-  description: string;
-};
+export type Pokemon = { name: string; url: string; };
+export type PokemonDetails = { name: string; abilities: { ability: { name: string; }; }[]; };
+export type Item = { name: string; description: string; };
 
-  export function getErrorMessage(status: number): string {
-  if (status === 404) {
-    return 'Nothing found for your search';
-  }
-
-  if (status >= 500) {
-    return 'Server is temporarily unavailable';
-  }
-
-  if (status >= 400) {
-    return 'Bad request';
-  }
-
+export function getErrorMessage(status: number): string {
+  if (status === 404) return 'Nothing found for your search';
+  if (status >= 500) return 'Server is temporarily unavailable';
+  if (status >= 400) return 'Bad request';
   return 'Unexpected error';
 }
 
-function App() {
-    const dispatch = useDispatch<AppDispatch>();
+// 3. Добавляем { children } в пропсы — это замена для <Outlet />
+export default function App({ children }: { children?: React.ReactNode }) {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();     // Для изменения URL
+  const pathname = usePathname(); // Получаем текущий путь (например, /pokemon-search/search)
 
-  const {
-    storedValue: lastSearch,
-    setValue: setLastSearch,
-  } = useLocalStorage('');
+  const { storedValue: lastSearch, setValue: setLastSearch } = useLocalStorage('');
+  const { crash } = useSelector((state: RootState) => state.pokemon);
 
-  const { crash } = useSelector(
-    (state: RootState) => state.pokemon
-  );
+  // 4. Используем хук Next.js. В Next.js он возвращает только объект для ЧТЕНИЯ.
+  const searchParams = useSearchParams();
 
-  const [searchParams, setSearchParams] =
-    useSearchParams();
-
-  const rawPage =
-    Number(searchParams.get('page')) || 1;
-
+  const rawPage = Number(searchParams?.get('page')) || 1;
   const page = Math.max(rawPage, 1);
 
-
-  const searchQuery =
-    useGetPokemonByNameQuery(
-      lastSearch.toLowerCase(),
-      {
-        skip: !lastSearch,
-      }
-    );
-
-  const listQuery =
-    useGetPokemonListQuery(page, {
-      skip: !!lastSearch,
-    });
-
-
-  const queryResult = lastSearch
-    ? searchQuery
-    : listQuery;
-
-  const {
-    data,
-    isLoading,
-    isFetching,
-    error,
-  } = queryResult;
-
+  const searchQuery = useGetPokemonByNameQuery(lastSearch.toLowerCase(), { skip: !lastSearch });
+  const listQuery = useGetPokemonListQuery(page, { skip: !!lastSearch });
+  const queryResult = lastSearch ? searchQuery : listQuery;
+  const { data, isLoading, isFetching, error } = queryResult;
 
   const items: Item[] = lastSearch
     ? (data as Item[]) ?? []
-    : (
-        data as {
-          items: Item[];
-          count: number;
-        }
-      )?.items ?? [];
+    : (data as { items: Item[]; count: number; })?.items ?? [];
 
   const totalPages = (lastSearch
     ? items.length
-    : (
-        data as {
-          items: Item[];
-          count: number;
-        }
-      )?.count ?? 0)/10;
+    : (data as { items: Item[]; count: number; })?.count ?? 0) / 10;
   
-  function causeAnError(){
+  function causeAnError() {
     dispatch(setCrash(true));
   }
-  function handlePageChange(
-  newPage: number
-) {
-  
-  setSearchParams({
-    page: String(newPage),
-  });
-}
-useEffect(() => {
-  if (rawPage > totalPages && totalPages > 0) {
-    setSearchParams({
-      page: String(totalPages),
-    });
 
-    return;
+  // 5. В Next.js функция установки параметров строки выглядит иначе через router.push
+  function handlePageChange(newPage: number) {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set('page', String(newPage));
+    router.push(`${pathname}?${params.toString()}`);
   }
 
-  dispatch(setLoading(true));
-
-}, [page, lastSearch]);
-useEffect(() => {
-    if (
-      rawPage > totalPages &&
-      totalPages > 0
-    ) {
-      setSearchParams({
-        page: String(totalPages),
-      });
+  useEffect(() => {
+    if (rawPage > totalPages && totalPages > 0) {
+      const params = new URLSearchParams(searchParams?.toString());
+      params.set('page', String(totalPages));
+      router.push(`${pathname}?${params.toString()}`);
+      return;
     }
-  }, [rawPage, totalPages]);  
+    dispatch(setLoading(true));
+  }, [page, lastSearch, totalPages, rawPage, pathname, router, searchParams, dispatch]);
 
-  async function handleSearch(query: string){
+  useEffect(() => {
+    if (rawPage > totalPages && totalPages > 0) {
+      const params = new URLSearchParams(searchParams?.toString());
+      params.set('page', String(totalPages));
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  }, [rawPage, totalPages, pathname, router, searchParams]);  
+
+  async function handleSearch(query: string) {
     const trimmedValue = query.trim();
-   if (trimmedValue === lastSearch) {
-    return;
-    }
-   dispatch(setErrorMessage(''));
-  dispatch(setResults([]));
-  setSearchParams({
-    page: '1',
-  });
-  setLastSearch(trimmedValue);
-  };
+    if (trimmedValue === lastSearch) return;
+    
+    dispatch(setErrorMessage(''));
+    dispatch(setResults([]));
+    
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set('page', '1');
+    router.push(`${pathname}?${params.toString()}`);
+    
+    setLastSearch(trimmedValue);
+  }
 
-  
-    if (crash) {
+  if (crash) {
     throw new Error('Test application error');
+  }
+  
+  let errorMessage = '';
+  if (error && 'status' in error) {
+    if (typeof error.status === 'number') {
+      errorMessage = getErrorMessage(error.status);
+    } else {
+      errorMessage = 'Network connection error';
     }
-    let errorMessage = '';
-
-if (error && 'status' in error) {
-  if (typeof error.status === 'number') {
-    errorMessage = getErrorMessage(
-      error.status
-    );
-  } else {
-    errorMessage =
-      'Network connection error';
   }
+
+  return (
+    <div className="layout">
+      <SelectedItemsFlyout />
+      <div className="left-panel">
+        <SearchSection onSearch={handleSearch} />
+        <PaginationContext.Provider
+          value={{
+            page,
+            totalPages,
+            setPage: handlePageChange,
+            setTotalCount
+          }}
+        >
+          <ResultsSection results={items} loading={isLoading} fetching={isFetching} errorMessage={errorMessage} onErrorCheck={causeAnError}/>  
+          <RefreshButton/>
+        </PaginationContext.Provider>
+      </div>
+      <div className="right-panel">
+        {/* 6. Вместо <Outlet /> рендерим детей, которых передаст Next.js */}
+        {children}
+      </div>
+    </div>
+  );
 }
-    return (
-        <div className="layout">
-          <SelectedItemsFlyout />
-          <div className="left-panel">
-            <SearchSection onSearch={handleSearch} />
-            <PaginationContext.Provider
-              value={{
-                page,
-                totalPages,
-                setPage:handlePageChange,
-                setTotalCount
-              }}
-            >
-            <ResultsSection results={items} loading={isLoading} fetching={isFetching} errorMessage={errorMessage} onErrorCheck={causeAnError}/>  
-                   <RefreshButton/>
-
-            </PaginationContext.Provider>
-          </div>
-          <div className="right-panel">
-            <Outlet />
-          </div>
-          </div>
-    );
-  }
-
-
-export default App
-
-
-
-
