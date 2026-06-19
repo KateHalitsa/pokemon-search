@@ -46,7 +46,7 @@ function ResultTable (props:PropsTable){
               onClick={(e) => e.stopPropagation()}
             />
             <Link
-              href={`pokemon/${item.name}?page=${page}`}
+              href={`/pokemon-search/search/pokemon/${item.name}?page=${page}`}
             >
               {item.name}
             </Link>

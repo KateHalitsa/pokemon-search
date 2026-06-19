@@ -1,4 +1,4 @@
-"use client"; // 1. ОБЯЗАТЕЛЬНО добавляем эту директиву в самый верх
+"use client"; 
 
 import './App.css';
 import SearchSection from './components/SearchSection/SearchSection';
@@ -13,7 +13,6 @@ import SelectedItemsFlyout from './components/SelectedItemsFlyout/SelectedItemsF
 import { useGetPokemonByNameQuery, useGetPokemonListQuery } from './components/api/pokemonApi';
 import RefreshButton from './components/RefreshButton/RefreshButton';
 
-// 2. Импортируем хуки для работы с URL из Next.js вместо react-router-dom
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 export type Pokemon = { name: string; url: string; };
@@ -27,7 +26,6 @@ export function getErrorMessage(status: number): string {
   return 'Unexpected error';
 }
 
-// 3. Добавляем { children } в пропсы — это замена для <Outlet />
 export default function App({ children }: { children?: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();     // Для изменения URL
@@ -36,7 +34,6 @@ export default function App({ children }: { children?: React.ReactNode }) {
   const { storedValue: lastSearch, setValue: setLastSearch } = useLocalStorage('');
   const { crash } = useSelector((state: RootState) => state.pokemon);
 
-  // 4. Используем хук Next.js. В Next.js он возвращает только объект для ЧТЕНИЯ.
   const searchParams = useSearchParams();
 
   const rawPage = Number(searchParams?.get('page')) || 1;
@@ -51,15 +48,14 @@ export default function App({ children }: { children?: React.ReactNode }) {
     ? (data as Item[]) ?? []
     : (data as { items: Item[]; count: number; })?.items ?? [];
 
-  const totalPages = (lastSearch
+  const totalPages = Math.ceil((lastSearch
     ? items.length
-    : (data as { items: Item[]; count: number; })?.count ?? 0) / 10;
+    : (data as { items: Item[]; count: number; })?.count ?? 0) / 10);
   
   function causeAnError() {
     dispatch(setCrash(true));
   }
 
-  // 5. В Next.js функция установки параметров строки выглядит иначе через router.push
   function handlePageChange(newPage: number) {
     const params = new URLSearchParams(searchParams?.toString());
     params.set('page', String(newPage));
@@ -129,7 +125,6 @@ export default function App({ children }: { children?: React.ReactNode }) {
         </PaginationContext.Provider>
       </div>
       <div className="right-panel">
-        {/* 6. Вместо <Outlet /> рендерим детей, которых передаст Next.js */}
         {children}
       </div>
     </div>
