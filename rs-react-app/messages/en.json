@@ -1,0 +1,9 @@
+{
+  "Navbar": {
+    "search": "Search",
+    "about": "About"
+  },
+  "NotFound": {
+    "title": "Page not found"
+  }
+}
