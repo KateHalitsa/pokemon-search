@@ -1,8 +1,8 @@
-"use client"; // 1. Обязательно делаем компонент клиентским
+"use client"; 
 
 import { useEffect, useState } from 'react';
-// 2. Меняем импорт роутера на встроенный в Next.js
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 
 type PokemonDetailsType = {
   name: string;
@@ -19,12 +19,10 @@ type PokemonDetailsType = {
 };
 
 function PokemonDetails() {
-  // 3. В Next.js useParams возвращает объект, где параметры всегда строки или массивы строк
   const params = useParams();
 const name = params?.name 
   ? params.name 
   : (Array.isArray(params?.slug) ? params.slug[1] : undefined);
-  // 4. Меняем useNavigate на useRouter
   const router = useRouter();
 
   const [pokemon, setPokemon] = useState<PokemonDetailsType | null>(null);
@@ -75,7 +73,6 @@ const name = params?.name
   return (
     <div className="pokemon-details">
       <button
-        // 5. Заменяем navigate('/search') на router.push(...)
         onClick={() => router.push('/pokemon-search/search')}
       >
         Close
@@ -83,10 +80,13 @@ const name = params?.name
 
       <h2>{pokemon.name}</h2>
 
-      <img
-        src={pokemon.sprites.front_default}
-        alt={pokemon.name}
-      />
+            <Image
+          src={pokemon.sprites.front_default}
+          alt={pokemon.name}
+          width={200}
+          height={300}
+          priority
+        />
 
       <p>Height: {pokemon.height}</p>
       <p>Weight: {pokemon.weight}</p>

@@ -2,7 +2,7 @@ import { Component, type ReactNode } from 'react';
 import * as React from 'react';
 import errorImg from '../../assets/error-img.jpg'
 import './ErrorBoundary.css';
-
+import Image from 'next/image';
 
 type Props = {
   children: ReactNode;
@@ -31,7 +31,10 @@ class ErrorBoundary extends Component<Props, State> {
         <div className='error-message'>
           <h2>Something went wrong</h2>
           <p>Please reload the page</p>
-          <img src={errorImg}></img>
+      <Image
+        src={errorImg}
+        alt="Application error"
+      /> 
         </div>
       );
     }
