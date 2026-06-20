@@ -71,7 +71,7 @@
 .error-btn, .pad-btn, .unselect-btn, .download-btn,.theme-btn,.refresh-btn {
     background-color: var(--pad-color);
 }
-#root {
+ body{
   width: 100%;
   margin: 0 auto;
   text-align: center;
