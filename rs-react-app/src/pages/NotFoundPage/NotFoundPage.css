@@ -1,0 +1,16 @@
+@import url('../../index.css');
+
+.notFound{
+        display: "flex";
+        flex-direction:"column";
+        align-items: "center";
+        justify-content: "center";
+        height: "80vh";
+        gap: "20px";
+         flex: 1;
+        height: 90%;
+        background-color:var(--first-panel-color);
+        border-radius: 12px;
+        padding: 10%;
+        color:var(--text);
+      }

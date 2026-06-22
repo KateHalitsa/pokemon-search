@@ -1,0 +1,21 @@
+@import url('../../index.css');
+
+.flyout {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  background: var(--second-panel-color);
+  color: var(--text);
+
+  z-index: 1000;
+}
+ .unselect-btn, .download-btn{
+  color: var(--text);
+ }
