@@ -1,6 +1,7 @@
 import React from "react";
 import './SearchSection.css';
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useTranslations } from "next-intl";
 
 export const SEARCH_STORAGE_KEY = "rssSearch";
 
@@ -9,6 +10,8 @@ type Props = {
 };
 
 function SearchSection(props: Props) {
+  const t = useTranslations("Search");
+
   const {
     storedValue: lastSearch,
     setValue: setLastSearch,
@@ -32,7 +35,7 @@ function SearchSection(props: Props) {
         <input
           className="search-input"
           type="text"
-          placeholder="Search..."
+          placeholder={t('placeholder')}
           value={lastSearch}
           onChange={handleChange}
         />
@@ -41,7 +44,7 @@ function SearchSection(props: Props) {
           className="search-btn"
           onClick={handleSearch}
         >
-          Search
+          {t("button")}
         </button>
       </div>
     </section>

@@ -8,13 +8,17 @@ import {
   useAppSelector,
 } from '../../store/hooks';
 import Link from 'next/link';
+import { useTranslations, useLocale } from "next-intl";
 
 export type PropsTable = {
   results: Item[];
 
 };
 function ResultTable (props:PropsTable){
-
+    const t = useTranslations("Table");
+  
+    const locale = useLocale(); 
+  
   const items = props.results;
   const { page } = usePagination();
   const dispatch  = useAppDispatch();
@@ -25,8 +29,8 @@ function ResultTable (props:PropsTable){
     return (
          <div className="results-table">
         <div className="table-header">
-          <div>Name</div>
-          <div>Description</div>
+          <div>{t("name")}</div>
+          <div>{t("description")}</div>
         </div>
         {items.map((item)=>(
         <div  className={`table-row ${
@@ -46,7 +50,7 @@ function ResultTable (props:PropsTable){
               onClick={(e) => e.stopPropagation()}
             />
             <Link
-              href={`/pokemon-search/search/pokemon/${item.name}?page=${page}`}
+              href={`/${locale}/pokemon-search/search/pokemon/${item.name}?page=${page}`}
             >
               {item.name}
             </Link>

@@ -4,6 +4,51 @@
     "about": "About"
   },
   "NotFound": {
-    "title": "Page not found"
-  }
+    "title": "Page not found",
+    "description":"The page you are looking for does not exist.",
+    "link":"Go to Search page"
+  },
+  "About":{
+    "title": "About Page",
+    "description":"This app is about Pokemon search.",
+    "about-author-title":"About author",
+    "about-author-description":"I know nothing about Pokemon.It's just that sometimes choosing the right topic takes me too long. Maybe I can change the topic later, but as the saying goes, 'Nothing is more permanent than temporary.'",
+    "link":" a link to the RS School React course "
+  },
+  "Table":{
+    "name":"Name",
+    "description":"Description"
+  },
+  "Details":
+    {
+        "height":"Height",
+        "weight":"Weight",
+        "abilities":"Abilities",
+        "close":"Close"
+    },
+    "Results":{
+    "title":"Results",
+    "error":"Error"
+    },
+    "Pagination":{
+        "prev":"Prev",
+        "next":"Next"
+    },
+    "Error": {
+    "title": "Something went wrong",
+    "reload": "Please reload the page",
+    "alt": "Application error"
+    },
+    "Refresh":{
+        "title":"Refresh"
+    },
+    "Search":{
+        "placeholder":"Search...",
+        "button":"Search"
+    },
+    "Selecte":{
+        "items":"Selected items",
+        "all":"Unselect all",
+        "download":"Download"
+    }
 }

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { usePagination }
 from '../../context/PaginationContext';
 
@@ -7,7 +8,8 @@ function Pagination() {
     totalPages,
     setPage,
   } = usePagination();
-
+    const t = useTranslations("Pagination");
+  
   return (
     <div>
       <button
@@ -15,7 +17,7 @@ function Pagination() {
         onClick={() => setPage(page - 1)}
         className='pad-btn'
       >
-        Prev
+        {t("prev")}
       </button>
 
       <span>
@@ -27,7 +29,7 @@ function Pagination() {
         onClick={() => setPage(page + 1)}
         className='pad-btn'
       >
-        Next
+        {t("next")}
       </button>
     </div>
   );

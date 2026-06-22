@@ -1,4 +1,4 @@
-import App from './App';
+/*import App from './App';
 
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Navbar from './components/Navbar/Navbar';
@@ -41,4 +41,4 @@ export default function Root() {
       </ThemeProvider>
     </Provider></div>
   );
-}
+}*/

@@ -28,8 +28,8 @@ export function getErrorMessage(status: number): string {
 
 export default function App({ children }: { children?: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();     // Для изменения URL
-  const pathname = usePathname(); // Получаем текущий путь (например, /pokemon-search/search)
+  const router = useRouter();     
+  const pathname = usePathname();
 
   const { storedValue: lastSearch, setValue: setLastSearch } = useLocalStorage('');
   const { crash } = useSelector((state: RootState) => state.pokemon);

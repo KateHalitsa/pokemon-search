@@ -1,19 +1,23 @@
 import Link from 'next/link';
 import './NotFoundPage.css'
+import { useTranslations, useLocale } from "next-intl";
 
 export default function NotFoundPage() {
+    const t = useTranslations("NotFound");
+    const locale = useLocale(); 
+
   return (
     <div className="notFound">
       <h1>404</h1>
 
-      <h2>Page Not Found</h2>
+      <h2>{t("title")}</h2>
 
       <p>
-        The page you are looking for does not exist.
+        {t("description")}
       </p>
 
-      <Link href="/pokemon-search/search">
-        Go to Search page
+      <Link href={`/${locale}/pokemon-search/search`}>
+        {t("link")}
       </Link>
     </div>
   );

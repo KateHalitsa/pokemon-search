@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { clearSelectedItems } from "../../store/pokemonSlice";
 import './SelectedItemsFlyout.css'
@@ -5,7 +6,8 @@ import './SelectedItemsFlyout.css'
 
 function SelectedItemsFlyout() {
   const dispatch = useAppDispatch();
-
+  const t = useTranslations("Selecte");
+  
   const selectedItems = useAppSelector(
     (state) => state.pokemon.selectedItems
   );
@@ -66,16 +68,16 @@ function SelectedItemsFlyout() {
   return (
     <div className="flyout">
       <p>
-        Selected items:
+        {t("items")}:
         {selectedItems.length}
       </p>
 
       <button className='unselect-btn' onClick={handleClear}>
-        Unselect all
-      </button>
+       {t("all")}
+         </button>
 
       <button className='download-btn' onClick={handleDownload}>
-        Download
+           {t("download")}
       </button>
     </div>
   );

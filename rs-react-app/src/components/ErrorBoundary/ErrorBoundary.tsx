@@ -6,6 +6,8 @@ import Image from 'next/image';
 
 type Props = {
   children: ReactNode;
+  title: string;
+  message: string;
 };
 
 type State = {
@@ -29,8 +31,8 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
        return (
         <div className='error-message'>
-          <h2>Something went wrong</h2>
-          <p>Please reload the page</p>
+         <h2>{this.props.title}</h2>
+          <p>{this.props.message}</p>
       <Image
         src={errorImg}
         alt="Application error"

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
+import { useLocale, useTranslations } from 'next-intl';
 
 type PokemonDetailsType = {
   name: string;
@@ -28,6 +29,8 @@ const name = params?.name
   const [pokemon, setPokemon] = useState<PokemonDetailsType | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+    const t = useTranslations("Details");
+    const locale = useLocale(); 
 
   useEffect(() => {
     async function loadPokemon() {
@@ -73,9 +76,9 @@ const name = params?.name
   return (
     <div className="pokemon-details">
       <button
-        onClick={() => router.push('/pokemon-search/search')}
+        onClick={() => router.push(`/${locale}/pokemon-search/search`)}
       >
-        Close
+        {t("close")}
       </button>
 
       <h2>{pokemon.name}</h2>
@@ -88,10 +91,10 @@ const name = params?.name
           priority
         />
 
-      <p>Height: {pokemon.height}</p>
-      <p>Weight: {pokemon.weight}</p>
+      <p>{t("height")}: {pokemon.height}</p>
+      <p>{t("weight")}: {pokemon.weight}</p>
 
-      <h3>Abilities</h3>
+      <h3>{t("abilities")}</h3>
 
       <ul>
         {pokemon.abilities.map((a) => (
