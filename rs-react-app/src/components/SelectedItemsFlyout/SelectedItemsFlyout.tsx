@@ -11,41 +11,23 @@ function SelectedItemsFlyout() {
   const selectedItems = useAppSelector(
     (state) => state.pokemon.selectedItems
   );
-  function handleDownload() {
-  const headers = [
-    'Name',
-    'Description',
-    'Details URL',
-  ];
+  async function handleDownload() {
+  const response = await fetch("/api/export", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(selectedItems)
+  });
 
-  const rows = selectedItems.map((item) => [
-    item.name,
-    item.description,
-    `/pokemon/${item.name}`,
-  ]);
+  const blob = await response.blob();
 
-  const csvContent = [
-    headers.join(','),
-    ...rows.map((row) => row.join(',')),
-  ].join('\n');
+  const url = URL.createObjectURL(blob);
 
-  const blob = new Blob(
-    [csvContent],
-    {
-      type: 'text/csv;charset=utf-8;',
-    }
-  );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const link =
-    document.createElement('a');
+  const link = document.createElement("a");
 
   link.href = url;
-
-  link.download =
-    `${selectedItems.length}_items.csv`;
+  link.download = `${selectedItems.length}_items.csv`;
 
   document.body.appendChild(link);
 
